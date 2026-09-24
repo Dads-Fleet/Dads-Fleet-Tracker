@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fleet & Dispatch Operating System</title>
+    <!-- Leaflet Open-Source Mapping CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        :root { --primary: #0f172a; --accent: #2563eb; --bg: #f8fafc; --card: #ffffff; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; background: var(--bg); color: #1e293b; }
+        nav { background: var(--primary); padding: 1rem; display: flex; justify-content: center; gap: 10px; }
+        nav button { background: #334155; color: white; border: none; padding: 10px 18px; border-radius: 6px; font-weight: 600; cursor: pointer; }
+        nav button.active-nav { background: var(--accent); }
+        .container { max-width: 900px; margin: 20px auto; padding: 0 15px; }
+        .view { display: none; background: var(--card); padding: 24px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .view.active { display: block; }
+        input, select, button.action-btn { width: 100%; padding: 12px; margin: 8px 0 16px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-size: 16px; }
+        button.action-btn { background: var(--accent); color: white; font-weight: bold; border: none; cursor: pointer; }
+        #admin-map { height: 380px; width: 100%; border-radius: 8px; margin-bottom: 20px; }
+        .card { background: #f1f5f9; padding: 12px 16px; border-left: 4px solid var(--accent); margin-bottom: 10px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; }
+        .badge { background: #dbeafe; color: #1e40af; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <button id="nav-customer" class="active-nav" onclick="switchView('customer')">Customer View</button>
+        <button id="nav-driver" onclick="switchView('driver')">Driver View</button>
+        <button id="nav-admin" onclick="switchView('admin')">Admin Console</button>
+    </nav>
+
+    <div class="container">
+        <!-- CUSTOMER PORTAL -->
+        <div id="view-customer" class="view active">
+            <h2>Request Arrival Stop</h2>
+            <p style="color: #64748b;">Submit your party size and desired time to ping our nearest dispatch unit.</p>
+            
+            <label>Party Size</label>
+            <input type="number" id="cust-party" placeholder="e.g., 4" min="1">
+            
+            <label>Requested Arrival Time</label>
+            <input type="time" id="cust-time">
+            
+            <label>Notes / Location Details</label>
+            <input type="text" id="cust-notes" placeholder="e.g., North entrance near patio">
+
+            <button class="action-btn" onclick="submitCustomerPing()">Send Dispatch Request</button>
+            <p id="cust-status" style="font-weight: 600; text-align: center;"></p>
+        </div>
+
+        <!-- DRIVER PORTAL -->
+        <div id="view-driver" class="view">
+            <h2>Driver GPS Beacon</h2>
+            <p style="color: #64748b;">Broadcast real-time position to the dispatch board (Throttled for zero cost).</p>
+            
+            <label>Truck / Vehicle Identifier</label>
+            <input type="text" id="driver-id" placeholder="e.g., Truck-101">
+
+            <button class="action-btn" id="gps-btn" onclick="toggleTracking()">Start Transmitting Location</button>
+            <p id="driver-status" style="font-weight: 600; text-align: center;">Status: Offline</p>
+        </div>
+
+        <!-- ADMIN DASHBOARD -->
+        <div id="view-admin" class="view">
+            <h2>Fleet Dispatch Map</h2>
+            <div id="admin-map"></div>
+
+            <h3>Active Customer Requests</h3>
+            <div id="admin-pings-list"><em>Listening for incoming customer pings...</em></div>
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- Firebase SDK Modular Import -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, setDoc, doc, onSnapshot, serverTimestamp, query, orderBy, limit } 
+        from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDYvkoarsvnosLCvjsTRSgjmxgfyF_d3Uc",
+            authDomain: "dads-fleet-tracker.firebaseapp.com",
+            projectId: "dads-fleet-tracker",
+            storageBucket: "dads-fleet-tracker.firebasestorage.app",
+            messagingSenderId: "44787930426",
+            appId: "1:44787930426:web:db1b59a767e5ae71aeec03"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // State variables
+        let tracking = false;
+        let watchId = null;
+        let lastGpsSend = 0;
+        let map = null;
+        let truckMarkers = {};
+
+        // --- NAVIGATION LOGIC ---
+        window.switchView = function(viewName) {
+            document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('nav button').forEach(el => el.classList.remove('active-nav'));
+            
+            document.getElementById(`view-${viewName}`).classList.add('active');
+            document.getElementById(`nav-${viewName}`).classList.add('active-nav');
+
+            if (viewName === 'admin') {
+                initAdminDashboard();
+            }
+        };
+
+        // --- CUSTOMER ACTIONS ---
+        window.submitCustomerPing = async function() {
+            const party = document.getElementById('cust-party').value;
+            const time = document.getElementById('cust-time').value;
+            const notes = document.getElementById('cust-notes').value;
+            const statusEl = document.getElementById('cust-status');
+
+            if (!party || !time) {
+                alert("Please enter party size and requested time.");
+                return;
+            }
+
+            try {
+                await addDoc(collection(db, "customer_requests"), {
+                    partySize: parseInt(party),
+                    requestedTime: time,
+                    notes: notes || "None",
+                    status: "Pending",
+                    createdAt: serverTimestamp()
+                });
+                statusEl.style.color = "#16a34a";
+                statusEl.innerText = "Request transmitted! Dispatch has been notified.";
+                document.getElementById('cust-party').value = "";
+                document.getElementById('cust-notes').value = "";
+            } catch (err) {
+                statusEl.style.color = "#dc2626";
+                statusEl.innerText = "Error submitting request. Check connection.";
+            }
+        };
+
+        // --- DRIVER GPS LOGIC (25-second Cost Throttle) ---
+        window.toggleTracking = function() {
+            const vehicleId = document.getElementById('driver-id').value.trim();
+            const statusEl = document.getElementById('driver-status');
+            const btn = document.getElementById('gps-btn');
+
+            if (!vehicleId) {
+                alert("Enter a Truck ID first.");
+                return;
+            }
+
+            if (!tracking) {
+                if (!("geolocation" in navigator)) {
+                    alert("Geolocation is not supported by your browser.");
+                    return;
+                }
+
+                tracking = true;
+                btn.innerText = "Stop Transmitting Location";
+                btn.style.background = "#dc2626";
+                statusEl.innerText = "Connecting to Satellite GPS...";
+
+                watchId = navigator.geolocation.watchPosition(async (pos) => {
+                    const now = Date.now();
+                    const lat = pos.coords.latitude;
+                    const lng = pos.coords.longitude;
+
+                    statusEl.innerText = `GPS Active: Lat ${lat.toFixed(4)}, Lng ${lng.toFixed(4)}`;
+
+                    // Throttle writes to once every 25 seconds to guarantee 100% free operation
+                    if (now - lastGpsSend > 25000) {
+                        lastGpsSend = now;
+                        await setDoc(doc(db, "active_fleet", vehicleId), {
+                            lat: lat,
+                            lng: lng,
+                            vehicleId: vehicleId,
+                            lastUpdated: serverTimestamp()
+                        });
+                    }
+                }, (err) => {
+                    statusEl.innerText = "GPS Error: " + err.message;
+                }, { enableHighAccuracy: true });
+
+            } else {
+                tracking = false;
+                navigator.geolocation.clearWatch(watchId);
+                btn.innerText = "Start Transmitting Location";
+                btn.style.background = "var(--accent)";
+                statusEl.innerText = "Status: Offline";
+            }
+        };
+
+        // --- ADMIN REAL-TIME DASHBOARD ---
+        let adminInitialized = false;
+        function initAdminDashboard() {
+            // Initialize Leaflet Map
+            if (!map) {
+                map = L.map('admin-map').setView([37.7749, -122.4194], 11); // Default center, will auto-adjust
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                    attribution: '© OpenStreetMap'
+                }).addTo(map);
+            }
+            setTimeout(() => { map.invalidateSize(); }, 300);
+
+            if (adminInitialized) return;
+            adminInitialized = true;
+
+            // Real-time Fleet Location Listener
+            onSnapshot(collection(db, "active_fleet"), (snapshot) => {
+                let bounds = [];
+                snapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    if (data.lat && data.lng) {
+                        const coords = [data.lat, data.lng];
+                        bounds.push(coords);
+
+                        if (truckMarkers[docSnap.id]) {
+                            truckMarkers[docSnap.id].setLatLng(coords);
+                        } else {
+                            truckMarkers[docSnap.id] = L.marker(coords)
+                                .addTo(map)
+                                .bindPopup(`<b>${docSnap.id}</b><br>Active Unit`);
+                        }
+                    }
+                });
+                if (bounds.length > 0) map.fitBounds(bounds, { padding: [50, 50] });
+            });
+
+            // Real-time Customer Request Listener
+            const pingsQuery = query(collection(db, "customer_requests"), orderBy("createdAt", "desc"), limit(10));
+            onSnapshot(pingsQuery, (snapshot) => {
+                const listEl = document.getElementById('admin-pings-list');
+                listEl.innerHTML = "";
+
+                if (snapshot.empty) {
+                    listEl.innerHTML = "<em>No active requests at the moment.</em>";
+                    return;
+                }
+
+                snapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    listEl.innerHTML += `
+                        <div class="card">
+                            <div>
+                                <strong>Party of ${data.partySize}</strong> — Target: ${data.requestedTime}<br>
+                                <small style="color: #64748b;">Notes: ${data.notes}</small>
+                            </div>
+                            <span class="badge">${data.status}</span>
+                        </div>
+                    `;
+                });
+            });
+        }
+    </script>
+</body>
+</html>
