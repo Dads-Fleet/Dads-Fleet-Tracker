@@ -90,7 +90,7 @@
             font-family: "Trebuchet MS", "Segoe UI", system-ui, sans-serif;
             min-height: 100vh;
         }
-        .c-wrap { max-width: 520px; margin: 0 auto; padding: 24px 16px 48px; position: relative; overflow: hidden; }
+        .c-wrap { max-width: 520px; margin: 0 auto; padding: 24px 16px 48px; position: relative; z-index: 1; overflow: hidden; }
         .c-hero { text-align: center; position: relative; padding-top: 8px; }
         .c-hero h1 { margin: 6px 0 4px; font-size: 2rem; color: #d6336c; text-shadow: 2px 2px 0 #fff; letter-spacing: .5px; }
         .c-hero p { margin: 0 auto 8px; color: #5b6b86; max-width: 360px; }
@@ -99,8 +99,49 @@
         .c-art .cone { animation: bob 3.2s ease-in-out infinite; }
         .c-art .slush { animation: bob 3.2s ease-in-out infinite .8s; }
         @keyframes bob { 0%,100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-8px) rotate(2deg); } }
-        .sprinkle { position: absolute; width: 10px; height: 4px; border-radius: 3px; opacity: .85; animation: fall 7s linear infinite; }
-        @keyframes fall { from { transform: translateY(-20px) rotate(0); } to { transform: translateY(520px) rotate(360deg); } }
+        .c-art .hero-bar { position: relative; width: 150px; height: 120px; }
+        .hero-bar .hb-item { position: absolute; inset: 0; display: flex; align-items: flex-end; justify-content: center; opacity: 0; transform: scale(.85) rotate(-6deg); transition: opacity .9s ease, transform .9s ease; }
+        .hero-bar .hb-item.on { opacity: 1; transform: none; }
+        .c-art .hero-bar svg { height: 100%; width: auto; max-width: 100%; }
+        .slush .sl-a { fill: var(--sl-a, #d62839); transition: fill 2s ease; }
+        .slush .sl-b { stroke: var(--sl-b, #ff8a95); transition: stroke 2s ease; }
+        .treat-layer { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: -1; }
+        .treat { position: absolute; top: -80px; opacity: .65; animation: treatFall 24s linear infinite; will-change: transform; }
+        .treat-inner svg { width: 100%; height: auto; display: block; }
+        @keyframes treatFall { from { transform: translateY(-80px); } to { transform: translateY(calc(100vh + 100px)); } }
+        .treat-inner { position: relative; display: block; isolation: isolate; animation: treatSway 4.5s ease-in-out infinite alternate; }
+        .treat-inner > .art { position: relative; z-index: 1; display: block; }
+        .acc-wings { position: absolute; left: -55%; width: 210%; top: 12%; z-index: 0; }
+        .acc-hat { position: absolute; left: 12%; width: 76%; top: -24%; z-index: 2; transform: rotate(-12deg); }
+        .acc-ears { position: absolute; left: 5%; width: 90%; top: -14%; z-index: 2; }
+        .acc-pumpkin { position: absolute; left: 15%; width: 70%; top: -30%; z-index: 2; transform: rotate(-8deg); }
+        .acc-ghost { position: absolute; left: -14%; width: 128%; top: -16%; z-index: 2; opacity: .96; }
+        .acc-spider { position: absolute; left: 30%; width: 40%; top: -55%; z-index: 2; animation: spiderBob 2.4s ease-in-out infinite alternate; }
+        @keyframes spiderBob { from { transform: translateY(-4px); } to { transform: translateY(4px); } }
+        .hero-wings { position: absolute; left: -15%; width: 130%; top: 20%; z-index: 0; pointer-events: none; }
+        .hero-bar .hb-item { z-index: 1; }
+        .hero-bar .hb-item > svg { position: relative; z-index: 1; }
+        .acc-wings .wl, .acc-wings .wr, .hero-wings .wl, .hero-wings .wr { transform-box: fill-box; animation: flapL .45s ease-in-out infinite alternate; }
+        .acc-wings .wl, .hero-wings .wl { transform-origin: right center; }
+        .acc-wings .wr, .hero-wings .wr { transform-origin: left center; animation-name: flapR; }
+        .hero-wings .wl, .hero-wings .wr { animation-duration: .8s; }
+        @keyframes flapL { from { transform: rotate(0); } to { transform: rotate(18deg) scaleY(.8); } }
+        @keyframes flapR { from { transform: rotate(0); } to { transform: rotate(-18deg) scaleY(.8); } }
+        .treat.sold { opacity: .45; }
+        .treat.sold svg { filter: grayscale(.5); }
+        .sold-tag { display: block; margin: 2px auto 0; width: max-content; font: 700 8px/1.4 system-ui, sans-serif; color: #fff; background: #868e96; border-radius: 6px; padding: 0 4px; }
+        .truck-run { position: fixed; left: 0; top: 38%; width: 150px; z-index: 50; pointer-events: none; animation: truckDrive 4.2s ease-in-out forwards; }
+        .truck-run svg { width: 100%; display: block; animation: truckBob .35s ease-in-out infinite alternate; }
+        .truck-run .wheel { transform-box: fill-box; transform-origin: center; animation: wheelSpin .5s linear infinite; }
+        .truck-bubble { position: absolute; left: 50%; top: -26px; transform: translateX(-50%); background: #fff; color: #d6336c; font: 700 13px/1 system-ui, sans-serif; padding: 6px 10px; border-radius: 12px; box-shadow: 0 3px 10px rgba(0,0,0,.12); white-space: nowrap; }
+        @keyframes truckDrive { from { transform: translateX(-170px); } to { transform: translateX(calc(100vw + 20px)); } }
+        @keyframes truckBob { from { transform: translateY(0); } to { transform: translateY(-2px); } }
+        @keyframes wheelSpin { to { transform: rotate(360deg); } }
+        .hero-bar .eyes { transform-box: fill-box; transform-origin: center; }
+        .hero-bar .hb-item.on .eyes { animation: heroBlink 4s ease-in-out .8s infinite; }
+        @keyframes heroBlink { 0%, 5%, 100% { transform: scaleY(1); } 2.5% { transform: scaleY(.1); } }
+        @keyframes treatSway { from { transform: rotate(-12deg) translateX(-5px); } to { transform: rotate(12deg) translateX(5px); } }
+
         .c-card { background: rgba(255,255,255,.92); border: 3px dashed #ffb3cf; border-radius: 22px; padding: 22px 20px 18px; margin-top: 10px; box-shadow: 0 10px 24px rgba(214,51,108,.15); position: relative; }
         .c-card label { font-weight: 700; color: #7a3b57; font-size: 14px; }
         .c-card input { border: 2px solid #ffd0e1; border-radius: 14px; background: #fffafc; }
@@ -112,7 +153,7 @@
         .staff-link { display: block; text-align: center; font-size: 12px; color: #a78bab; margin-top: 4px; text-decoration: none; }
         .staff-link:hover { text-decoration: underline; }
 
-        @media (prefers-reduced-motion: reduce) { .c-art svg, .sprinkle { animation: none; } }
+        @media (prefers-reduced-motion: reduce) { .c-art svg, .c-art .hero-bar, .treat, .treat-inner, .acc-wings g, .hero-wings g, .acc-spider { animation: none; } .treat-layer, .truck-run { display: none; } .hero-bar .eyes { animation: none; } }
     </style>
 </head>
 <body>
@@ -143,35 +184,39 @@
     <div class="c-wrap">
         <div class="c-hero">
             <div class="c-art" aria-hidden="true">
-                <svg class="cone" viewBox="0 0 120 170" xmlns="http://www.w3.org/2000/svg">
-                    <polygon points="28,86 92,86 60,160" fill="#e8a954"/>
-                    <path d="M40,92 L74,128 M52,90 L82,118 M64,88 L88,106 M80,92 L46,126 M68,90 L38,114 M56,90 L34,104" stroke="#c98532" stroke-width="2.5" fill="none"/>
-                    <circle cx="60" cy="72" r="34" fill="#ff8fb1"/>
-                    <path d="M26,76 q4,18 9,6 q4,16 10,2 q5,14 10,0 q5,12 10,0 q5,14 10,-1 q5,12 9,-4 q5,10 8,-3 L94,76 Z" fill="#ff8fb1"/>
-                    <circle cx="60" cy="46" r="27" fill="#9be7d0"/>
-                    <circle cx="48" cy="40" r="3" fill="#fff" opacity=".6"/>
-                    <rect x="52" y="56" width="10" height="4" rx="2" fill="#ffd43b" transform="rotate(25 57 58)"/>
-                    <rect x="66" y="42" width="10" height="4" rx="2" fill="#ff6b6b" transform="rotate(-30 71 44)"/>
-                    <rect x="44" y="64" width="10" height="4" rx="2" fill="#4dabf7" transform="rotate(-15 49 66)"/>
-                    <path d="M60,22 q8,-14 18,-10" stroke="#5c940d" stroke-width="3" fill="none" stroke-linecap="round"/>
-                    <circle cx="60" cy="24" r="8" fill="#e03131"/>
-                </svg>
+                <div class="cone hero-bar">
+                    <div class="hb-item base on">
+                        <svg viewBox="0 0 180 130" xmlns="http://www.w3.org/2000/svg">
+                        <g transform="rotate(-8 90 65)">
+                        <rect x="18" y="58" width="144" height="52" rx="12" fill="#2f190f"/>
+                        <path d="M19,60 H161 V93 Q150,100 140,95 Q128,101 116,96 Q102,102 90,96 Q76,101 64,96 Q50,102 40,95 Q28,99 19,92 Z" fill="#fbf4e6"/>
+                        <path d="M19,88 Q28,95 40,91 Q50,98 64,92 Q76,97 90,92 Q102,98 116,92 Q128,97 140,91 Q150,95 161,88 V93 Q150,100 140,95 Q128,101 116,96 Q102,102 90,96 Q76,101 64,96 Q50,102 40,95 Q28,99 19,92 Z" fill="#eadcc0"/>
+                        <rect x="18" y="56" width="144" height="31" rx="12" fill="#2b170d"/>
+                        <rect x="18" y="14" width="144" height="64" rx="12" fill="#4a2a1b"/>
+                        <rect x="26" y="19" width="80" height="4" rx="2" fill="#fff" opacity=".13"/>
+                        <circle cx="34" cy="32" r="3.2" fill="#2a150b"/><circle cx="33.1" cy="31.1" r="1.1" fill="#6b4330" opacity=".7"/><circle cx="50" cy="32" r="3.2" fill="#2a150b"/><circle cx="49.1" cy="31.1" r="1.1" fill="#6b4330" opacity=".7"/><circle cx="66" cy="32" r="3.2" fill="#2a150b"/><circle cx="65.1" cy="31.1" r="1.1" fill="#6b4330" opacity=".7"/><circle cx="82" cy="32" r="3.2" fill="#2a150b"/><circle cx="81.1" cy="31.1" r="1.1" fill="#6b4330" opacity=".7"/><circle cx="98" cy="32" r="3.2" fill="#2a150b"/><circle cx="97.1" cy="31.1" r="1.1" fill="#6b4330" opacity=".7"/><circle cx="114" cy="32" r="3.2" fill="#2a150b"/><circle cx="113.1" cy="31.1" r="1.1" fill="#6b4330" opacity=".7"/><circle cx="130" cy="32" r="3.2" fill="#2a150b"/><circle cx="129.1" cy="31.1" r="1.1" fill="#6b4330" opacity=".7"/><circle cx="146" cy="32" r="3.2" fill="#2a150b"/><circle cx="145.1" cy="31.1" r="1.1" fill="#6b4330" opacity=".7"/><circle cx="34" cy="46" r="3.2" fill="#2a150b"/><circle cx="33.1" cy="45.1" r="1.1" fill="#6b4330" opacity=".7"/><circle cx="50" cy="46" r="3.2" fill="#2a150b"/><circle cx="49.1" cy="45.1" r="1.1" fill="#6b4330" opacity=".7"/><circle cx="66" cy="46" r="3.2" fill="#2a150b"/><circle cx="65.1" cy="45.1" r="1.1" fill="#6b4330" opacity=".7"/><circle cx="82" cy="46" r="3.2" fill="#2a150b"/><circle cx="81.1" cy="45.1" r="1.1" fill="#6b4330" opacity=".7"/><circle cx="98" cy="46" r="3.2" fill="#2a150b"/><circle cx="97.1" cy="45.1" r="1.1" fill="#6b4330" opacity=".7"/><circle cx="114" cy="46" r="3.2" fill="#2a150b"/><circle cx="113.1" cy="45.1" r="1.1" fill="#6b4330" opacity=".7"/><circle cx="130" cy="46" r="3.2" fill="#2a150b"/><circle cx="129.1" cy="45.1" r="1.1" fill="#6b4330" opacity=".7"/><circle cx="146" cy="46" r="3.2" fill="#2a150b"/><circle cx="145.1" cy="45.1" r="1.1" fill="#6b4330" opacity=".7"/><circle cx="34" cy="60" r="3.2" fill="#2a150b"/><circle cx="33.1" cy="59.1" r="1.1" fill="#6b4330" opacity=".7"/><circle cx="50" cy="60" r="3.2" fill="#2a150b"/><circle cx="49.1" cy="59.1" r="1.1" fill="#6b4330" opacity=".7"/><circle cx="66" cy="60" r="3.2" fill="#2a150b"/><circle cx="65.1" cy="59.1" r="1.1" fill="#6b4330" opacity=".7"/><circle cx="82" cy="60" r="3.2" fill="#2a150b"/><circle cx="81.1" cy="59.1" r="1.1" fill="#6b4330" opacity=".7"/><circle cx="98" cy="60" r="3.2" fill="#2a150b"/><circle cx="97.1" cy="59.1" r="1.1" fill="#6b4330" opacity=".7"/><circle cx="114" cy="60" r="3.2" fill="#2a150b"/><circle cx="113.1" cy="59.1" r="1.1" fill="#6b4330" opacity=".7"/><circle cx="130" cy="60" r="3.2" fill="#2a150b"/><circle cx="129.1" cy="59.1" r="1.1" fill="#6b4330" opacity=".7"/><circle cx="146" cy="60" r="3.2" fill="#2a150b"/><circle cx="145.1" cy="59.1" r="1.1" fill="#6b4330" opacity=".7"/>
+                        </g>
+                        </svg>
+                    </div>
+                </div>
                 <svg class="slush" viewBox="0 0 120 170" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                        <linearGradient id="slushGrad" x1="0" y1="0" x2="1" y2="1">
-                            <stop offset="0" stop-color="#4dd0ff"/><stop offset="1" stop-color="#b197fc"/>
-                        </linearGradient>
-                    </defs>
-                    <line x1="68" y1="40" x2="88" y2="4" stroke="#ff4d6d" stroke-width="8" stroke-linecap="round"/>
-                    <line x1="68" y1="40" x2="88" y2="4" stroke="#fff" stroke-width="2.5" stroke-dasharray="6 9" stroke-linecap="round"/>
-                    <path d="M20,66 Q26,26 60,28 Q94,26 100,66 Z" fill="url(#slushGrad)"/>
-                    <circle cx="44" cy="42" r="4" fill="#fff" opacity=".55"/>
-                    <circle cx="70" cy="38" r="3" fill="#fff" opacity=".55"/>
-                    <path d="M22,64 L98,64 L90,156 Q60,166 30,156 Z" fill="#ffffff" fill-opacity=".75" stroke="#ffadc9" stroke-width="3"/>
-                    <path d="M26,90 L94,90 L91,126 L29,126 Z" fill="#ff6fa5" opacity=".85"/>
-                    <path d="M26,70 L94,70 L92,96 Q60,104 28,96 Z" fill="url(#slushGrad)" opacity=".9"/>
-                    <circle cx="60" cy="108" r="12" fill="#fff"/>
-                    <path d="M60,100 l2.5,5 5.5,.8 -4,3.9 1,5.5 -5,-2.7 -5,2.7 1,-5.5 -4,-3.9 5.5,-.8 z" fill="#ffd43b"/>
+                <defs>
+                <clipPath id="slCup"><path d="M23,66 L97,66 L89,156 Q60,165 31,156 Z"/></clipPath>
+                <linearGradient id="slGlass" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity=".45"/><stop offset=".35" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".12"/></linearGradient>
+                </defs>
+                <path d="M66,58 L84,10" stroke="#ff4d6d" stroke-width="7" stroke-linecap="round"/>
+                <path d="M66,58 L84,10" stroke="#fff" stroke-width="2.4" stroke-dasharray="5 8" stroke-linecap="round"/>
+                <path class="sl-a" d="M22,70 C20,52 34,44 44,44 C46,32 58,26 68,30 C80,30 90,40 88,48 C98,50 102,62 98,70 Z"/>
+                <path class="sl-b" d="M30,64 C40,54 70,52 92,62 M38,52 C50,44 70,44 84,50 M50,40 C56,35 66,35 72,39" fill="none" stroke-width="6" stroke-linecap="round"/>
+                <g clip-path="url(#slCup)">
+                <rect class="sl-a" x="0" y="60" width="120" height="110"/>
+                <path class="sl-b" d="M10,96 Q40,86 60,96 T110,94 M10,128 Q40,118 60,128 T110,126" fill="none" stroke-width="8" opacity=".95"/>
+                <g fill="#fff" opacity=".5"><circle cx="40" cy="84" r="2"/><circle cx="70" cy="110" r="2.5"/><circle cx="54" cy="140" r="2"/><circle cx="80" cy="80" r="1.6"/><circle cx="46" cy="114" r="1.6"/></g>
+                <rect x="0" y="60" width="120" height="110" fill="url(#slGlass)"/>
+                </g>
+                <path d="M23,66 L97,66 L89,156 Q60,165 31,156 Z" fill="none" stroke="#fff" stroke-opacity=".85" stroke-width="3"/>
+                <rect x="18" y="62" width="84" height="8" rx="4" fill="#fff"/>
+                <path d="M33,76 L38,148" stroke="#fff" stroke-width="5" opacity=".45" stroke-linecap="round"/>
                 </svg>
             </div>
             <h1>Treat Stop!</h1>
@@ -489,7 +534,7 @@
         if (isStandalone()) return;
         if (!force) {
             if (installOffered[audience]) return;
-            try { const t = +localStorage.getItem(laterKey) || 0; if (Date.now() - t < 7 * 864e5) return; } catch (e) {}
+            try { const t = +localStorage.getItem(laterKey) || 0; if (Date.now() - t < 0) return; /* 'Not now' only skips this visit; installing hides it for good */ } catch (e) {}
         }
         installOffered[audience] = true;
         document.getElementById('install-title').textContent = audience === 'customer' ? 'Add Treat Stop to your home screen? 🍦' : 'Add Dispatch to your home screen?';
@@ -546,7 +591,7 @@
     });
 
     let routeSeq = 0;
-    const INSTALL_DELAY_MS = 3000; // popup appears 3 seconds after arriving
+    const INSTALL_DELAY_MS = 1000; // popup appears 1 second after opening the link
     function setManifest(staff) {
         const l = document.getElementById('manifest-link'), t = document.getElementById('apple-title');
         if (l) l.href = staff ? 'manifest-staff.json' : 'manifest.json';
@@ -581,16 +626,230 @@
         mount('tpl-customer');
 
         const wrap = document.querySelector('.c-wrap');
-        const colors = ['#ff6b6b', '#ffd43b', '#4dabf7', '#69db7c', '#da77f2', '#ff922b'];
-        for (let i = 0; i < 18; i++) {
-            const s = document.createElement('span');
-            s.className = 'sprinkle';
-            s.style.left = Math.random() * 100 + '%';
-            s.style.background = colors[i % colors.length];
-            s.style.animationDelay = (-Math.random() * 7) + 's';
-            s.style.animationDuration = (6 + Math.random() * 5) + 's';
-            wrap.appendChild(s);
+        // ---------- Treat art ----------
+        // Library of drawings used for the falling treats and the rotating main image.
+        // Add new drawings here. 'tags' are words matched against inventory item names later.
+        const TREAT_ART = {"ice-cream-sandwich":{"w":40,"tags":["sandwich"],"svg":"<svg viewBox=\"0 0 44 34\"><rect x=\"2\" y=\"13\" width=\"40\" height=\"18\" rx=\"4\" fill=\"#2f190f\"/><path d=\"M2.5,14 H41.5 V24 Q37,27 32,25 Q27,28 22,25 Q17,28 12,25 Q7,27 2.5,24 Z\" fill=\"#fbf4e6\"/><rect x=\"2\" y=\"13\" width=\"40\" height=\"8\" rx=\"4\" fill=\"#2b170d\"/><rect x=\"2\" y=\"2\" width=\"40\" height=\"17\" rx=\"4\" fill=\"#4a2a1b\"/><g fill=\"#2a150b\"><circle cx=\"8\" cy=\"7\" r=\"1.2\"/><circle cx=\"15\" cy=\"7\" r=\"1.2\"/><circle cx=\"22\" cy=\"7\" r=\"1.2\"/><circle cx=\"29\" cy=\"7\" r=\"1.2\"/><circle cx=\"36\" cy=\"7\" r=\"1.2\"/><circle cx=\"8\" cy=\"13\" r=\"1.2\"/><circle cx=\"15\" cy=\"13\" r=\"1.2\"/><circle cx=\"22\" cy=\"13\" r=\"1.2\"/><circle cx=\"29\" cy=\"13\" r=\"1.2\"/><circle cx=\"36\" cy=\"13\" r=\"1.2\"/></g></svg>"},"cookie-sandwich":{"w":32,"tags":["cookie"],"svg":"<svg viewBox=\"0 0 36 30\"><ellipse cx=\"18\" cy=\"21\" rx=\"16\" ry=\"7\" fill=\"#c98a4b\"/><ellipse cx=\"18\" cy=\"17\" rx=\"15\" ry=\"6\" fill=\"#fbf4e6\"/><ellipse cx=\"18\" cy=\"11\" rx=\"16\" ry=\"8\" fill=\"#d99a58\"/><g fill=\"#4a2a1b\"><circle cx=\"10\" cy=\"10\" r=\"1.6\"/><circle cx=\"17\" cy=\"7\" r=\"1.4\"/><circle cx=\"24\" cy=\"11\" r=\"1.7\"/><circle cx=\"14\" cy=\"14\" r=\"1.3\"/><circle cx=\"27\" cy=\"7.5\" r=\"1.2\"/></g></svg>"},"fudge-bar":{"w":22,"tags":["fudge"],"svg":"<svg viewBox=\"0 0 24 44\"><rect x=\"10\" y=\"30\" width=\"4\" height=\"13\" rx=\"2\" fill=\"#e9c48a\"/><rect x=\"4\" y=\"1\" width=\"16\" height=\"31\" rx=\"7\" fill=\"#5a3320\"/><path d=\"M7.5,8 v17\" stroke=\"#7d4a2e\" stroke-width=\"2.2\" stroke-linecap=\"round\"/></svg>"},"chocolate-dipped-bar":{"w":22,"tags":["chocolate","dipped","vanilla bar"],"svg":"<svg viewBox=\"0 0 24 44\"><rect x=\"10\" y=\"30\" width=\"4\" height=\"13\" rx=\"2\" fill=\"#e9c48a\"/><rect x=\"4\" y=\"1\" width=\"16\" height=\"31\" rx=\"7\" fill=\"#fbf4e6\"/><path d=\"M4,8 Q4,1 11,1 H13 Q20,1 20,8 V21 Q18,24 16,21.5 Q14,25 12,21.5 Q10,24.5 8,21.5 Q6,24 4,21 Z\" fill=\"#4a2a1b\"/><path d=\"M7.5,6 v11\" stroke=\"#6b4330\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg>"},"cookies-cream-bar":{"w":22,"tags":["cookies","cream bar"],"svg":"<svg viewBox=\"0 0 24 44\"><rect x=\"10\" y=\"30\" width=\"4\" height=\"13\" rx=\"2\" fill=\"#e9c48a\"/><rect x=\"4\" y=\"1\" width=\"16\" height=\"31\" rx=\"7\" fill=\"#f4efe6\"/><g fill=\"#3a2a22\"><circle cx=\"8\" cy=\"6\" r=\"1.4\"/><circle cx=\"15\" cy=\"6\" r=\"1.4\"/><circle cx=\"8\" cy=\"13\" r=\"1.4\"/><circle cx=\"15\" cy=\"13\" r=\"1.4\"/><circle cx=\"8\" cy=\"20\" r=\"1.4\"/><circle cx=\"15\" cy=\"20\" r=\"1.4\"/><circle cx=\"8\" cy=\"27\" r=\"1.4\"/><circle cx=\"15\" cy=\"27\" r=\"1.4\"/><circle cx=\"11.5\" cy=\"9.5\" r=\"1.1\"/><circle cx=\"17\" cy=\"9.5\" r=\"1.1\"/><circle cx=\"11.5\" cy=\"16.5\" r=\"1.1\"/><circle cx=\"17\" cy=\"16.5\" r=\"1.1\"/><circle cx=\"11.5\" cy=\"23.5\" r=\"1.1\"/><circle cx=\"17\" cy=\"23.5\" r=\"1.1\"/></g></svg>"},"strawberry-crunch-bar":{"w":22,"tags":["strawberry","shortcake","crunch"],"svg":"<svg viewBox=\"0 0 24 44\"><rect x=\"10\" y=\"30\" width=\"4\" height=\"13\" rx=\"2\" fill=\"#e9c48a\"/><rect x=\"4\" y=\"1\" width=\"16\" height=\"31\" rx=\"7\" fill=\"#ffc9d6\"/><g fill=\"#ff6b8b\"><circle cx=\"8\" cy=\"6\" r=\"1.8\"/><circle cx=\"14\" cy=\"4.5\" r=\"1.8\"/><circle cx=\"17\" cy=\"10\" r=\"1.8\"/><circle cx=\"7.5\" cy=\"15\" r=\"1.8\"/><circle cx=\"16\" cy=\"18\" r=\"1.8\"/><circle cx=\"11\" cy=\"24\" r=\"1.8\"/><circle cx=\"16.5\" cy=\"28\" r=\"1.6\"/><circle cx=\"7.5\" cy=\"27\" r=\"1.6\"/><circle cx=\"12\" cy=\"12\" r=\"1.6\"/></g></svg>"},"orange-cream-bar":{"w":22,"tags":["orange","creamsicle","dream"],"svg":"<svg viewBox=\"0 0 24 44\"><rect x=\"10\" y=\"30\" width=\"4\" height=\"13\" rx=\"2\" fill=\"#e9c48a\"/><rect x=\"4\" y=\"1\" width=\"16\" height=\"31\" rx=\"7\" fill=\"#ff922b\"/><rect x=\"8\" y=\"7\" width=\"8\" height=\"19\" rx=\"4\" fill=\"#fff4e0\"/></svg>"},"toasted-almond-bar":{"w":22,"tags":["almond","toasted"],"svg":"<svg viewBox=\"0 0 24 44\"><rect x=\"10\" y=\"30\" width=\"4\" height=\"13\" rx=\"2\" fill=\"#e9c48a\"/><rect x=\"4\" y=\"1\" width=\"16\" height=\"31\" rx=\"7\" fill=\"#e3b98a\"/><g fill=\"#b5824f\"><circle cx=\"8\" cy=\"5\" r=\"1.3\"/><circle cx=\"13\" cy=\"5\" r=\"1.3\"/><circle cx=\"17\" cy=\"5\" r=\"1.3\"/><circle cx=\"8\" cy=\"11\" r=\"1.3\"/><circle cx=\"13\" cy=\"11\" r=\"1.3\"/><circle cx=\"17\" cy=\"11\" r=\"1.3\"/><circle cx=\"8\" cy=\"17\" r=\"1.3\"/><circle cx=\"13\" cy=\"17\" r=\"1.3\"/><circle cx=\"17\" cy=\"17\" r=\"1.3\"/><circle cx=\"8\" cy=\"23\" r=\"1.3\"/><circle cx=\"13\" cy=\"23\" r=\"1.3\"/><circle cx=\"17\" cy=\"23\" r=\"1.3\"/><circle cx=\"8\" cy=\"28\" r=\"1.3\"/><circle cx=\"13\" cy=\"28\" r=\"1.3\"/><circle cx=\"17\" cy=\"28\" r=\"1.3\"/></g></svg>"},"rocket-pop":{"w":22,"tags":["rocket","bomb","firecracker","red white"],"svg":"<svg viewBox=\"0 0 24 44\"><rect x=\"10\" y=\"30\" width=\"4\" height=\"13\" rx=\"2\" fill=\"#e9c48a\"/><path d=\"M8,13 Q8,4 12,1.5 Q16,4 16,13 Z\" fill=\"#e5383b\"/><rect x=\"7.2\" y=\"12.5\" width=\"9.6\" height=\"8.5\" rx=\"1.5\" fill=\"#fff\"/><path d=\"M6.4,20.5 H17.6 V29 Q17.6,32 14.6,32 H9.4 Q6.4,32 6.4,29 Z\" fill=\"#3b5bdb\"/></svg>"},"twin-pop":{"w":26,"tags":["twin","double"],"svg":"<svg viewBox=\"0 0 28 44\"><rect x=\"6\" y=\"30\" width=\"3.5\" height=\"13\" rx=\"1.7\" fill=\"#e9c48a\"/><rect x=\"18.5\" y=\"30\" width=\"3.5\" height=\"13\" rx=\"1.7\" fill=\"#e9c48a\"/><path d=\"M3,6 Q3,1 8,1 H20 Q25,1 25,6 V28 Q25,32 21,32 H7 Q3,32 3,28 Z\" fill=\"#9775fa\"/><path d=\"M14,2 V31\" stroke=\"#7048e8\" stroke-width=\"1.6\"/><rect x=\"6\" y=\"5\" width=\"2.5\" height=\"20\" rx=\"1.2\" fill=\"#fff\" opacity=\".35\"/></svg>"},"lemon-ice-pop":{"w":22,"tags":["lemon","lemonade"],"svg":"<svg viewBox=\"0 0 24 44\"><rect x=\"10\" y=\"30\" width=\"4\" height=\"13\" rx=\"2\" fill=\"#e9c48a\"/><rect x=\"4\" y=\"1\" width=\"16\" height=\"31\" rx=\"7\" fill=\"#ffe066\"/><rect x=\"7\" y=\"5\" width=\"3\" height=\"20\" rx=\"1.5\" fill=\"#fff\" opacity=\".45\"/></svg>"},"cherry-ice-pop":{"w":22,"tags":["cherry"],"svg":"<svg viewBox=\"0 0 24 44\"><rect x=\"10\" y=\"30\" width=\"4\" height=\"13\" rx=\"2\" fill=\"#e9c48a\"/><rect x=\"4\" y=\"1\" width=\"16\" height=\"31\" rx=\"7\" fill=\"#d62839\"/><rect x=\"7\" y=\"5\" width=\"3\" height=\"20\" rx=\"1.5\" fill=\"#fff\" opacity=\".35\"/></svg>"},"blueberry-ice-pop":{"w":22,"tags":["blueberry","blue raspberry"],"svg":"<svg viewBox=\"0 0 24 44\"><rect x=\"10\" y=\"30\" width=\"4\" height=\"13\" rx=\"2\" fill=\"#e9c48a\"/><rect x=\"4\" y=\"1\" width=\"16\" height=\"31\" rx=\"7\" fill=\"#3b5bdb\"/><rect x=\"7\" y=\"5\" width=\"3\" height=\"20\" rx=\"1.5\" fill=\"#fff\" opacity=\".35\"/></svg>"},"watermelon-pop":{"w":24,"tags":["watermelon"],"svg":"<svg viewBox=\"0 0 26 44\"><rect x=\"11\" y=\"27\" width=\"4\" height=\"16\" rx=\"2\" fill=\"#e9c48a\"/><path d=\"M2,4 Q13,0 24,4 L14,30 H12 Z\" fill=\"#ff4f74\"/><path d=\"M2,4 Q13,0 24,4 L23.2,6 Q13,2.5 2.8,6 Z\" fill=\"#51cf66\"/><g fill=\"#2b2b2b\"><ellipse cx=\"9\" cy=\"10\" rx=\".9\" ry=\"1.4\"/><ellipse cx=\"16\" cy=\"11\" rx=\".9\" ry=\"1.4\"/><ellipse cx=\"12.5\" cy=\"17\" rx=\".9\" ry=\"1.4\"/><ellipse cx=\"11\" cy=\"23\" rx=\".8\" ry=\"1.2\"/></g></svg>"},"freezer-pop-red":{"w":12,"tags":["freezer","ice pop"],"svg":"<svg viewBox=\"0 0 14 46\"><rect x=\"2\" y=\"2\" width=\"10\" height=\"42\" rx=\"2\" fill=\"#ff4d6d\"/><rect x=\"2\" y=\"2\" width=\"10\" height=\"42\" rx=\"2\" fill=\"#fff\" fill-opacity=\".25\" stroke=\"#fff\" stroke-width=\"1\"/><path d=\"M2,6 H12 M2,40 H12\" stroke=\"#fff\" stroke-width=\"1.2\" stroke-dasharray=\"1.5 1.5\"/><rect x=\"4\" y=\"9\" width=\"2\" height=\"28\" rx=\"1\" fill=\"#fff\" opacity=\".45\"/></svg>"},"freezer-pop-blue":{"w":12,"tags":["freezer","ice pop"],"svg":"<svg viewBox=\"0 0 14 46\"><rect x=\"2\" y=\"2\" width=\"10\" height=\"42\" rx=\"2\" fill=\"#4dabf7\"/><rect x=\"2\" y=\"2\" width=\"10\" height=\"42\" rx=\"2\" fill=\"#fff\" fill-opacity=\".25\" stroke=\"#fff\" stroke-width=\"1\"/><path d=\"M2,6 H12 M2,40 H12\" stroke=\"#fff\" stroke-width=\"1.2\" stroke-dasharray=\"1.5 1.5\"/><rect x=\"4\" y=\"9\" width=\"2\" height=\"28\" rx=\"1\" fill=\"#fff\" opacity=\".45\"/></svg>"},"freezer-pop-green":{"w":12,"tags":["freezer","ice pop"],"svg":"<svg viewBox=\"0 0 14 46\"><rect x=\"2\" y=\"2\" width=\"10\" height=\"42\" rx=\"2\" fill=\"#69db7c\"/><rect x=\"2\" y=\"2\" width=\"10\" height=\"42\" rx=\"2\" fill=\"#fff\" fill-opacity=\".25\" stroke=\"#fff\" stroke-width=\"1\"/><path d=\"M2,6 H12 M2,40 H12\" stroke=\"#fff\" stroke-width=\"1.2\" stroke-dasharray=\"1.5 1.5\"/><rect x=\"4\" y=\"9\" width=\"2\" height=\"28\" rx=\"1\" fill=\"#fff\" opacity=\".45\"/></svg>"},"freezer-pop-purple":{"w":12,"tags":["freezer","ice pop"],"svg":"<svg viewBox=\"0 0 14 46\"><rect x=\"2\" y=\"2\" width=\"10\" height=\"42\" rx=\"2\" fill=\"#b197fc\"/><rect x=\"2\" y=\"2\" width=\"10\" height=\"42\" rx=\"2\" fill=\"#fff\" fill-opacity=\".25\" stroke=\"#fff\" stroke-width=\"1\"/><path d=\"M2,6 H12 M2,40 H12\" stroke=\"#fff\" stroke-width=\"1.2\" stroke-dasharray=\"1.5 1.5\"/><rect x=\"4\" y=\"9\" width=\"2\" height=\"28\" rx=\"1\" fill=\"#fff\" opacity=\".45\"/></svg>"},"gumball-cone-cup":{"w":24,"tags":["screwball","gumball","cone cup"],"svg":"<svg viewBox=\"0 0 26 44\"><path d=\"M2,6 H24 L14,40 H12 Z\" fill=\"#fff\" fill-opacity=\".55\" stroke=\"#fff\" stroke-width=\"1\"/><path d=\"M3,8 H23 L17,28 H9 Z\" fill=\"#ff4d6d\"/><path d=\"M5,11 Q13,15 21,10 M7,17 Q13,20 19,16 M9,23 Q13,25 17,22\" stroke=\"#fff\" stroke-width=\"1.8\" fill=\"none\" stroke-linecap=\"round\"/><circle cx=\"13\" cy=\"33\" r=\"4\" fill=\"#4dabf7\"/><circle cx=\"11.6\" cy=\"31.6\" r=\"1.2\" fill=\"#fff\" opacity=\".8\"/><rect x=\"1\" y=\"4\" width=\"24\" height=\"3\" rx=\"1.5\" fill=\"#fff\"/></svg>"},"push-up-pop":{"w":18,"tags":["push","sherbet"],"svg":"<svg viewBox=\"0 0 20 44\"><path d=\"M3,14 C3,4 17,4 17,14 Z\" fill=\"#ffa94d\"/><rect x=\"3\" y=\"13\" width=\"14\" height=\"27\" rx=\"2\" fill=\"#fff\"/><rect x=\"3\" y=\"20\" width=\"14\" height=\"5\" fill=\"#ff922b\"/><rect x=\"3\" y=\"30\" width=\"14\" height=\"5\" fill=\"#ff922b\"/><rect x=\"8\" y=\"40\" width=\"4\" height=\"3\" rx=\"1\" fill=\"#e9c48a\"/></svg>"},"rainbow-snow-cone":{"w":24,"tags":["snow cone","shaved ice","rainbow"],"svg":"<svg viewBox=\"0 0 26 44\"><path d=\"M2,15 C2,5 8,2 13,2 C18,2 24,5 24,15 Z\" fill=\"#4dabf7\"/><path d=\"M2,15 C2,9 6,6 9,5 L13,15 Z\" fill=\"#ff4d6d\"/><path d=\"M13,15 L17,3 C21,5 24,9 24,15 Z\" fill=\"#ffd43b\"/><path d=\"M3,15 H23 L14,42 H12 Z\" fill=\"#fff\" stroke=\"#dbe4ff\" stroke-width=\"1\"/></svg>"},"ice-cream-cup":{"w":28,"tags":["cup","vanilla cup","chocolate cup"],"svg":"<svg viewBox=\"0 0 30 32\"><path d=\"M2,12 H28 L25,30 H5 Z\" fill=\"#fff\" stroke=\"#ffadc9\" stroke-width=\"1.2\"/><path d=\"M2,16 H28 M3,22 H27\" stroke=\"#ff8fb1\" stroke-width=\"2\"/><path d=\"M3,12 C3,4 10,3 15,3 C20,3 27,4 27,12 Z\" fill=\"#fff4dc\"/><path d=\"M15,3 C20,3 27,4 27,12 H15 Z\" fill=\"#7a4a2e\"/><path d=\"M20,1 L24,10\" stroke=\"#e9c48a\" stroke-width=\"2.4\" stroke-linecap=\"round\"/></svg>"},"smiley-pop-blue":{"w":24,"tags":["character","face","kids"],"svg":"<svg viewBox=\"0 0 26 46\"><rect x=\"11\" y=\"32\" width=\"4\" height=\"13\" rx=\"2\" fill=\"#e9c48a\"/><rect x=\"4\" y=\"1\" width=\"18\" height=\"33\" rx=\"8\" fill=\"#74c0fc\"/><circle cx=\"10\" cy=\"13\" r=\"2.2\" fill=\"#1c3a5e\"/><circle cx=\"16\" cy=\"13\" r=\"2.2\" fill=\"#1c3a5e\"/><circle cx=\"10.6\" cy=\"12.3\" r=\".7\" fill=\"#fff\"/><circle cx=\"16.6\" cy=\"12.3\" r=\".7\" fill=\"#fff\"/><path d=\"M9.5,19.5 Q13,23.5 16.5,19.5\" stroke=\"#1c3a5e\" stroke-width=\"1.6\" fill=\"none\" stroke-linecap=\"round\"/><circle cx=\"7.5\" cy=\"18.5\" r=\"1.7\" fill=\"#ff8fab\" opacity=\".7\"/><circle cx=\"18.5\" cy=\"18.5\" r=\"1.7\" fill=\"#ff8fab\" opacity=\".7\"/></svg>"},"smiley-pop-pink":{"w":24,"tags":["character","face","kids"],"svg":"<svg viewBox=\"0 0 26 46\"><rect x=\"11\" y=\"32\" width=\"4\" height=\"13\" rx=\"2\" fill=\"#e9c48a\"/><rect x=\"4\" y=\"1\" width=\"18\" height=\"33\" rx=\"8\" fill=\"#ffa8c5\"/><circle cx=\"10\" cy=\"13\" r=\"2.2\" fill=\"#7a1f45\"/><circle cx=\"16\" cy=\"13\" r=\"2.2\" fill=\"#7a1f45\"/><circle cx=\"10.6\" cy=\"12.3\" r=\".7\" fill=\"#fff\"/><circle cx=\"16.6\" cy=\"12.3\" r=\".7\" fill=\"#fff\"/><path d=\"M9.5,19.5 Q13,23.5 16.5,19.5\" stroke=\"#7a1f45\" stroke-width=\"1.6\" fill=\"none\" stroke-linecap=\"round\"/><circle cx=\"7.5\" cy=\"18.5\" r=\"1.7\" fill=\"#ff8fab\" opacity=\".7\"/><circle cx=\"18.5\" cy=\"18.5\" r=\"1.7\" fill=\"#ff8fab\" opacity=\".7\"/></svg>"},"smiley-pop-green":{"w":24,"tags":["character","face","kids"],"svg":"<svg viewBox=\"0 0 26 46\"><rect x=\"11\" y=\"32\" width=\"4\" height=\"13\" rx=\"2\" fill=\"#e9c48a\"/><rect x=\"4\" y=\"1\" width=\"18\" height=\"33\" rx=\"8\" fill=\"#8ce99a\"/><circle cx=\"10\" cy=\"13\" r=\"2.2\" fill=\"#1f5c2e\"/><circle cx=\"16\" cy=\"13\" r=\"2.2\" fill=\"#1f5c2e\"/><circle cx=\"10.6\" cy=\"12.3\" r=\".7\" fill=\"#fff\"/><circle cx=\"16.6\" cy=\"12.3\" r=\".7\" fill=\"#fff\"/><path d=\"M9.5,19.5 Q13,23.5 16.5,19.5\" stroke=\"#1f5c2e\" stroke-width=\"1.6\" fill=\"none\" stroke-linecap=\"round\"/><circle cx=\"7.5\" cy=\"18.5\" r=\"1.7\" fill=\"#ff8fab\" opacity=\".7\"/><circle cx=\"18.5\" cy=\"18.5\" r=\"1.7\" fill=\"#ff8fab\" opacity=\".7\"/></svg>"},"slush-cherry":{"w":26,"tags":["slush","cherry"],"svg":"<svg viewBox=\"0 0 30 42\"><path d=\"M4,15 C3,9 8,7 11,7 C12,3 17,1 20,3 C24,3 27,7 26,9 C28,10 28,13 27,15 Z\" fill=\"#d62839\"/><path d=\"M7,12 C11,9 19,9 24,12\" stroke=\"#ff8a95\" stroke-width=\"1.6\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M4,14 H26 L23.5,39 Q15,41.5 6.5,39 Z\" fill=\"#d62839\"/><path d=\"M4,14 H26 L23.5,39 Q15,41.5 6.5,39 Z\" fill=\"#fff\" fill-opacity=\".18\" stroke=\"#fff\" stroke-width=\"1.2\"/><rect x=\"3\" y=\"13\" width=\"24\" height=\"3\" rx=\"1.5\" fill=\"#fff\"/></svg>"},"slush-lemonade":{"w":26,"tags":["slush","lemonade","lemon"],"svg":"<svg viewBox=\"0 0 30 42\"><path d=\"M4,15 C3,9 8,7 11,7 C12,3 17,1 20,3 C24,3 27,7 26,9 C28,10 28,13 27,15 Z\" fill=\"#f7c815\"/><path d=\"M7,12 C11,9 19,9 24,12\" stroke=\"#fff3a3\" stroke-width=\"1.6\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M4,14 H26 L23.5,39 Q15,41.5 6.5,39 Z\" fill=\"#f7c815\"/><path d=\"M4,14 H26 L23.5,39 Q15,41.5 6.5,39 Z\" fill=\"#fff\" fill-opacity=\".18\" stroke=\"#fff\" stroke-width=\"1.2\"/><rect x=\"3\" y=\"13\" width=\"24\" height=\"3\" rx=\"1.5\" fill=\"#fff\"/></svg>"},"slush-watermelon":{"w":26,"tags":["slush","watermelon"],"svg":"<svg viewBox=\"0 0 30 42\"><path d=\"M4,15 C3,9 8,7 11,7 C12,3 17,1 20,3 C24,3 27,7 26,9 C28,10 28,13 27,15 Z\" fill=\"#ff4f74\"/><path d=\"M7,12 C11,9 19,9 24,12\" stroke=\"#9be3a1\" stroke-width=\"1.6\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M4,14 H26 L23.5,39 Q15,41.5 6.5,39 Z\" fill=\"#ff4f74\"/><path d=\"M4,14 H26 L23.5,39 Q15,41.5 6.5,39 Z\" fill=\"#fff\" fill-opacity=\".18\" stroke=\"#fff\" stroke-width=\"1.2\"/><rect x=\"3\" y=\"13\" width=\"24\" height=\"3\" rx=\"1.5\" fill=\"#fff\"/></svg>"},"slush-blueberry":{"w":26,"tags":["slush","blueberry","blue raspberry"],"svg":"<svg viewBox=\"0 0 30 42\"><path d=\"M4,15 C3,9 8,7 11,7 C12,3 17,1 20,3 C24,3 27,7 26,9 C28,10 28,13 27,15 Z\" fill=\"#3b5bdb\"/><path d=\"M7,12 C11,9 19,9 24,12\" stroke=\"#91a7ff\" stroke-width=\"1.6\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M4,14 H26 L23.5,39 Q15,41.5 6.5,39 Z\" fill=\"#3b5bdb\"/><path d=\"M4,14 H26 L23.5,39 Q15,41.5 6.5,39 Z\" fill=\"#fff\" fill-opacity=\".18\" stroke=\"#fff\" stroke-width=\"1.2\"/><rect x=\"3\" y=\"13\" width=\"24\" height=\"3\" rx=\"1.5\" fill=\"#fff\"/></svg>"},"cookie-dough-cone":{"w":24,"tags":["cookie dough"],"svg":"<svg viewBox=\"0 0 26 46\"><path d=\"M5,20 H21 L13,45 Z\" fill=\"#e8a954\"/><path d=\"M7,23 L16,36 M12,21 L19,29 M19,23 L10,37\" stroke=\"#c98532\" stroke-width=\"1.2\"/><circle cx=\"13\" cy=\"13\" r=\"9.5\" fill=\"#f3e2c0\"/><path d=\"M3.5,15 H22.5 V18 Q21,21.5 19,19 Q17,22.5 15,19.5 Q13,22.5 11,19.5 Q9,22 7,19 Q5,21.5 3.5,18 Z\" fill=\"#f3e2c0\"/><g fill=\"#4a2a1b\"><rect x=\"8\" y=\"12\" width=\"2.2\" height=\"2\" rx=\".5\"/><rect x=\"15\" y=\"9\" width=\"2\" height=\"2\" rx=\".5\"/><rect x=\"12\" y=\"16\" width=\"2.2\" height=\"1.8\" rx=\".5\"/><rect x=\"17.5\" y=\"14.5\" width=\"1.8\" height=\"1.8\" rx=\".5\"/></g><g fill=\"#d4a86a\"><circle cx=\"11.5\" cy=\"7\" r=\"1.6\"/><circle cx=\"17\" cy=\"18\" r=\"1.5\"/><circle cx=\"6.5\" cy=\"16\" r=\"1.4\"/></g><circle cx=\"9.5\" cy=\"9\" r=\"2\" fill=\"#fff\" opacity=\".45\"/></svg>"},"vanilla-cone":{"w":24,"tags":["vanilla"],"svg":"<svg viewBox=\"0 0 26 46\"><path d=\"M5,20 H21 L13,45 Z\" fill=\"#e8a954\"/><path d=\"M7,23 L16,36 M12,21 L19,29 M19,23 L10,37\" stroke=\"#c98532\" stroke-width=\"1.2\"/><circle cx=\"13\" cy=\"13\" r=\"9.5\" fill=\"#fff3d6\"/><path d=\"M3.5,15 H22.5 V18 Q21,21.5 19,19 Q17,22.5 15,19.5 Q13,22.5 11,19.5 Q9,22 7,19 Q5,21.5 3.5,18 Z\" fill=\"#fff3d6\"/><g fill=\"#3a2a22\" opacity=\".55\"><circle cx=\"14\" cy=\"10\" r=\".5\"/><circle cx=\"10\" cy=\"14\" r=\".5\"/><circle cx=\"17\" cy=\"15\" r=\".5\"/><circle cx=\"12\" cy=\"17\" r=\".5\"/></g><circle cx=\"9.5\" cy=\"9\" r=\"2\" fill=\"#fff\" opacity=\".45\"/></svg>"},"cotton-candy-cone":{"w":24,"tags":["cotton candy"],"svg":"<svg viewBox=\"0 0 26 46\"><path d=\"M5,20 H21 L13,45 Z\" fill=\"#e8a954\"/><path d=\"M7,23 L16,36 M12,21 L19,29 M19,23 L10,37\" stroke=\"#c98532\" stroke-width=\"1.2\"/><circle cx=\"13\" cy=\"13\" r=\"9.5\" fill=\"#ffb3d1\"/><path d=\"M3.5,15 H22.5 V18 Q21,21.5 19,19 Q17,22.5 15,19.5 Q13,22.5 11,19.5 Q9,22 7,19 Q5,21.5 3.5,18 Z\" fill=\"#ffb3d1\"/><path d=\"M6,11 Q9.5,7 13,10 T20,9.5 M5.5,16 Q9,12.5 13,16 T20.5,15\" stroke=\"#8fd3ff\" stroke-width=\"2.6\" fill=\"none\" stroke-linecap=\"round\"/><circle cx=\"9.5\" cy=\"9\" r=\"2\" fill=\"#fff\" opacity=\".45\"/></svg>"},"chocolate-cone":{"w":24,"tags":["chocolate cone","chocolate scoop"],"svg":"<svg viewBox=\"0 0 26 46\"><path d=\"M5,20 H21 L13,45 Z\" fill=\"#e8a954\"/><path d=\"M7,23 L16,36 M12,21 L19,29 M19,23 L10,37\" stroke=\"#c98532\" stroke-width=\"1.2\"/><circle cx=\"13\" cy=\"13\" r=\"9.5\" fill=\"#7a4a2e\"/><path d=\"M3.5,15 H22.5 V18 Q21,21.5 19,19 Q17,22.5 15,19.5 Q13,22.5 11,19.5 Q9,22 7,19 Q5,21.5 3.5,18 Z\" fill=\"#7a4a2e\"/><path d=\"M7,8 Q10,5.5 13,7\" stroke=\"#9a6440\" stroke-width=\"1.6\" fill=\"none\" stroke-linecap=\"round\"/><circle cx=\"9.5\" cy=\"9\" r=\"2\" fill=\"#fff\" opacity=\".45\"/></svg>"}};
+        const ALL_TREATS = Object.keys(TREAT_ART);
+        const HERO_DEFAULT = ['rocket-pop', 'cookie-dough-cone', 'fudge-bar', 'strawberry-crunch-bar', 'vanilla-cone', 'watermelon-pop', 'orange-cream-bar', 'cotton-candy-cone', 'twin-pop', 'chocolate-dipped-bar', 'chocolate-cone', 'gumball-cone-cup', 'cookies-cream-bar'];
+        // Slushies and pops are featured: they show up about 3x as often in the falling treats and a bit bigger.
+        const isFeatured = (k) => k.startsWith('slush-') || /pop|bar/.test(k);
+        // Find the best drawing for each item name: tags found in the name score by length,
+        // words from the drawing's own name break ties (so 'Watermelon Pop' beats the watermelon slushie).
+        const treatKeysFor = (names) => {
+            const out = new Set();
+            names.forEach(raw => {
+                const x = String(raw).toLowerCase();
+                if (TREAT_ART[x]) { out.add(x); return; }
+                let best = 0, keys = [];
+                ALL_TREATS.forEach(k => {
+                    let score = TREAT_ART[k].tags.reduce((s, t) => s + (x.includes(t) ? t.length : 0), 0);
+                    if (!score) return;
+                    score += k.split('-').filter(w => x.includes(w)).length * 2;
+                    if (score > best) { best = score; keys = [k]; } else if (score === best) keys.push(k);
+                });
+                keys.forEach(k => out.add(k));
+            });
+            return [...out];
+        };
+
+        // Slushie flavor rotation: [base color, swirl color]. Singles get a lighter swirl; mixes swirl two flavors.
+        const CHERRY = '#d62839', LEMON = '#f7c815', MELON = '#ff4f74', BLUE = '#3b5bdb';
+        const FLAVORS = [
+            [CHERRY, '#ff8a95'], [LEMON, CHERRY], [MELON, LEMON], [BLUE, CHERRY], [LEMON, '#fff3a3'],
+            [BLUE, LEMON], [MELON, '#9be3a1'], [CHERRY, BLUE], [BLUE, '#91a7ff'], [MELON, BLUE]
+        ];
+        let slushArt = document.querySelector('.c-art .slush');
+        let flavorIdx = 0;
+        const flavorTimer = setInterval(() => {
+            if (!slushArt || !slushArt.isConnected) { clearInterval(flavorTimer); return; }
+            if (document.hidden) return;
+            flavorIdx = (flavorIdx + 1) % FLAVORS.length;
+            slushArt.style.setProperty('--sl-a', FLAVORS[flavorIdx][0]);
+            slushArt.style.setProperty('--sl-b', FLAVORS[flavorIdx][1]);
+        }, 21000);
+
+        // Faces for the falling treats: each one gets a random happy, excited or OMG face.
+        // Anchor = [x, y, size, dark] in that drawing's own coordinates (dark = light-colored face ink).
+        const FACE_ANCHORS = {
+            'ice-cream-sandwich': [22, 10, .9, 1], 'cookie-sandwich': [18, 11, .9, 0],
+            'fudge-bar': [12, 15, .95, 1], 'chocolate-dipped-bar': [12, 13, .95, 1], 'cookies-cream-bar': [12, 15, .95, 0],
+            'strawberry-crunch-bar': [12, 15, .95, 0], 'orange-cream-bar': [12, 16, .95, 0], 'toasted-almond-bar': [12, 15, .95, 0],
+            'rocket-pop': [12, 17, .72, 0], 'twin-pop': [14, 15, 1.05, 0], 'lemon-ice-pop': [12, 15, .95, 0],
+            'cherry-ice-pop': [12, 15, .95, 1], 'blueberry-ice-pop': [12, 15, .95, 1], 'watermelon-pop': [13, 13, .85, 0],
+            'freezer-pop-red': [7, 20, .62, 0], 'freezer-pop-blue': [7, 20, .62, 0], 'freezer-pop-green': [7, 20, .62, 0], 'freezer-pop-purple': [7, 20, .62, 0],
+            'gumball-cone-cup': [13, 16, .75, 0], 'push-up-pop': [10, 27, .8, 0], 'rainbow-snow-cone': [13, 22, .8, 0], 'ice-cream-cup': [15, 23, .85, 0],
+            'cookie-dough-cone': [13, 13, .9, 0], 'vanilla-cone': [13, 13, .9, 0], 'cotton-candy-cone': [13, 13, .9, 0], 'chocolate-cone': [13, 13, .9, 1],
+            'slush-cherry': [15, 27, .9, 1], 'slush-lemonade': [15, 27, .9, 0], 'slush-watermelon': [15, 27, .9, 0], 'slush-blueberry': [15, 27, .9, 1]
+        };
+        const FACES = {
+            happy: (ink) => '<circle cx="-3" cy="-1.5" r="1.3" fill="' + ink + '"/><circle cx="3" cy="-1.5" r="1.3" fill="' + ink + '"/><path d="M-2.6,1.4 Q0,4.4 2.6,1.4" stroke="' + ink + '" stroke-width="1.2" fill="none" stroke-linecap="round"/>',
+            excited: (ink) => '<path d="M-4.3,-1 Q-3,-3.2 -1.7,-1 M1.7,-1 Q3,-3.2 4.3,-1" stroke="' + ink + '" stroke-width="1.2" fill="none" stroke-linecap="round"/><path d="M-3,1 H3 Q3,5.6 0,5.6 Q-3,5.6 -3,1 Z" fill="' + ink + '"/><path d="M-1.6,4.2 Q0,3 1.6,4.2 Q1.2,5.3 0,5.3 Q-1.2,5.3 -1.6,4.2 Z" fill="#ff6b8b"/>',
+            sad: (ink) => '<circle cx="-3" cy="-1" r="1.2" fill="' + ink + '"/><circle cx="3" cy="-1" r="1.2" fill="' + ink + '"/><path d="M-4.4,-3.4 L-1.8,-2.6 M4.4,-3.4 L1.8,-2.6 M-2.6,3.8 Q0,1.4 2.6,3.8" stroke="' + ink + '" stroke-width="1.1" fill="none" stroke-linecap="round"/><path d="M4.6,1 q.9,1.6 0,2.4 q-.9,-.8 0,-2.4 Z" fill="#74c0fc"/>',
+            fangs: (ink) => '<circle cx="-3" cy="-1.5" r="1.3" fill="' + ink + '"/><circle cx="3" cy="-1.5" r="1.3" fill="' + ink + '"/><path d="M-3,1.2 Q0,3.6 3,1.2" stroke="' + ink + '" stroke-width="1.2" fill="none" stroke-linecap="round"/><path d="M-1.9,2 L-1.2,4.4 L-.5,2.4 Z M1.9,2 L1.2,4.4 L.5,2.4 Z" fill="#fff" stroke="' + ink + '" stroke-width=".35"/>',
+            omg: (ink) => '<circle cx="-3" cy="-1.5" r="1.6" fill="' + ink + '"/><circle cx="3" cy="-1.5" r="1.6" fill="' + ink + '"/><circle cx="-2.5" cy="-2" r=".55" fill="#fff"/><circle cx="3.5" cy="-2" r=".55" fill="#fff"/><ellipse cx="0" cy="3.2" rx="1.4" ry="1.9" fill="' + ink + '"/>'
+        };
+        const MOODS = ['happy', 'excited', 'omg'];
+        const withFace = (key, svg, mood) => {
+            const a = FACE_ANCHORS[key];
+            if (!a) return svg;
+            const ink = a[3] ? '#fff7ec' : '#3a2318';
+            mood = mood || MOODS[Math.floor(Math.random() * MOODS.length)];
+            const face = '<g transform="translate(' + a[0] + ' ' + a[1] + ') scale(' + a[2] + ')"><circle cx="-5" cy="2" r="1.3" fill="#ff8fab" opacity=".6"/><circle cx="5" cy="2" r="1.3" fill="#ff8fab" opacity=".6"/>' + FACES[mood](ink) + '</g>';
+            return svg.replace(/<\/svg>$/, face + '</svg>');
+        };
+
+        // ---------- Seasonal extras (switch on by date) ----------
+        // October: bat wings and witch hats. December: Santa hats. Other months: none.
+        // To preview a season any time, add ?season=halloween or ?season=christmas to the link.
+        const SEASON = (() => {
+            const q = new URLSearchParams(location.search).get('season');
+            if (q) return q;
+            const m = new Date().getMonth();
+            return m === 9 ? 'halloween' : m === 11 ? 'christmas' : '';
+        })();
+        const SEASON_ART = {
+            wings: '<span class="acc-wings"><svg viewBox="0 0 100 40"><g class="wl"><path d="M50,14 C40,2 22,0 4,8 C10,12 10,18 6,24 C14,20 18,24 18,30 C24,24 30,26 32,32 C36,24 44,22 50,24 Z" fill="#2b2140"/><path d="M48,16 C38,8 26,8 14,12 M46,20 C38,16 30,18 24,24" stroke="#4b3a6b" stroke-width="1.4" fill="none"/></g><g class="wr"><path d="M50,14 C60,2 78,0 96,8 C90,12 90,18 94,24 C86,20 82,24 82,30 C76,24 70,26 68,32 C64,24 56,22 50,24 Z" fill="#2b2140"/><path d="M52,16 C62,8 74,8 86,12 M54,20 C62,16 70,18 76,24" stroke="#4b3a6b" stroke-width="1.4" fill="none"/></g></svg></span>',
+            witch: '<span class="acc-hat"><svg viewBox="0 0 40 34"><path d="M9,27 Q17,15 21,2 Q24,1 25,4 Q24,8 27,12 L31,27 Z" fill="#3b2a5a"/><path d="M10.5,24 H29.8 L30.6,27.5 H9.6 Z" fill="#ff922b"/><rect x="17" y="23.5" width="5" height="4.5" rx="1" fill="#ffd43b"/><rect x="18.3" y="24.7" width="2.4" height="2.1" fill="#ff922b"/><ellipse cx="20" cy="28.5" rx="19" ry="4.5" fill="#2b2140"/></svg></span>',
+            devil: '<span class="acc-ears"><svg viewBox="0 0 40 16"><path d="M6,15 Q2,6 6,0 Q8,7 13,10 Z" fill="#e03131"/><path d="M34,15 Q38,6 34,0 Q32,7 27,10 Z" fill="#e03131"/><path d="M6,2 Q5,6 7,9" stroke="#ff8787" stroke-width="1" fill="none"/><path d="M34,2 Q35,6 33,9" stroke="#ff8787" stroke-width="1" fill="none"/></svg></span>',
+            cat: '<span class="acc-ears"><svg viewBox="0 0 40 16"><path d="M3,16 L7,1 L16,12 Z" fill="#2b2140"/><path d="M6,13 L8,5 L12,11 Z" fill="#ff8fab"/><path d="M37,16 L33,1 L24,12 Z" fill="#2b2140"/><path d="M34,13 L32,5 L28,11 Z" fill="#ff8fab"/></svg></span>',
+            pumpkin: '<span class="acc-pumpkin"><svg viewBox="0 0 40 30"><path d="M19,6 Q19,1 23,0" stroke="#5c940d" stroke-width="2.4" fill="none" stroke-linecap="round"/><ellipse cx="20" cy="18" rx="17" ry="11" fill="#ff922b"/><path d="M20,7 Q14,18 20,29 M20,7 Q26,18 20,29 M10,9 Q5,18 10,27 M30,9 Q35,18 30,27" stroke="#e8590c" stroke-width="1.3" fill="none"/><path d="M11,15 l4,-4 l4,4 Z M21,15 l4,-4 l4,4 Z" fill="#3a1d05"/><path d="M11,20 l3,3 l3,-2 l3,2 l3,-2 l3,2 l3,-3 q-9,7 -18,0 Z" fill="#3a1d05"/></svg></span>',
+            ghost: '<span class="acc-ghost"><svg viewBox="0 0 40 34"><path d="M3,30 C2,12 9,2 20,2 C31,2 38,12 37,30 Q34,26 31,31 Q28,26 25,31 Q22,26 20,31 Q17,26 14,31 Q11,26 8,31 Q6,27 3,30 Z" fill="#fff" stroke="#e9ecef" stroke-width="1"/><ellipse cx="14" cy="15" rx="2.8" ry="3.6" fill="#2b2140"/><ellipse cx="26" cy="15" rx="2.8" ry="3.6" fill="#2b2140"/><ellipse cx="20" cy="23" rx="2.2" ry="2.8" fill="#2b2140"/></svg></span>',
+            spider: '<span class="acc-spider"><svg viewBox="0 0 20 40"><path d="M10,0 V26" stroke="#6c6c80" stroke-width=".9"/><g stroke="#2b2140" stroke-width="1.3" fill="none" stroke-linecap="round"><path d="M6,28 L1,24 M6,30 L0,30 M6,32 L1,36 M14,28 L19,24 M14,30 L20,30 M14,32 L19,36"/></g><ellipse cx="10" cy="30" rx="5" ry="4.5" fill="#2b2140"/><circle cx="8.3" cy="29" r="1.2" fill="#fff"/><circle cx="11.7" cy="29" r="1.2" fill="#fff"/><circle cx="8.5" cy="29.2" r=".5" fill="#2b2140"/><circle cx="11.9" cy="29.2" r=".5" fill="#2b2140"/></svg></span>',
+            santa: '<span class="acc-hat"><svg viewBox="0 0 40 34"><path d="M8,26 Q12,8 26,6 Q34,6 36,16 L31,18 Q29,12 24,14 Q18,18 32,26 Z" fill="#e03131"/><circle cx="34" cy="17" r="4" fill="#fff"/><rect x="5" y="24" width="30" height="7" rx="3.5" fill="#fff"/></svg></span>'
+        };
+        // Chance of each costume per falling treat (the rest fall plain).
+        const SEASON_ODDS = {
+            halloween: [['wings', .22], ['witch', .14], ['ghost', .12], ['devil', .1], ['cat', .1], ['pumpkin', .1], ['spider', .1]],
+            christmas: [['santa', .7]]
+        };
+        // Halloween also mixes a few ghosts, jack-o'-lanterns and candy corn into the falling treats,
+        // and some treats get little vampire fangs.
+        const SPOOKY_ART = {"pumpkin":{"w":30,"svg":"<svg viewBox=\"0 0 32 30\"><path d=\"M15,6 Q15,1 19,0\" stroke=\"#5c940d\" stroke-width=\"2.4\" fill=\"none\" stroke-linecap=\"round\"/><ellipse cx=\"16\" cy=\"18\" rx=\"15\" ry=\"11\" fill=\"#ff922b\"/><path d=\"M16,7 Q11,18 16,29 M16,7 Q21,18 16,29 M7,9 Q3,18 7,27 M25,9 Q29,18 25,27\" stroke=\"#e8590c\" stroke-width=\"1.2\" fill=\"none\"/><path d=\"M8,15 l3.5,-4 l3.5,4 Z M17,15 l3.5,-4 l3.5,4 Z\" fill=\"#ffd43b\"/><path d=\"M8,20 l2.5,3 l2.5,-2 l3,2 l3,-2 l2.5,2 l2.5,-3 q-8,7 -16,0 Z\" fill=\"#ffd43b\"/></svg>"},"candycorn":{"w":22,"svg":"<svg viewBox=\"0 0 26 30\"><path d=\"M13,1 Q16,1 18,7 L24,24 Q25,29 20,29 H6 Q1,29 2,24 L8,7 Q10,1 13,1 Z\" fill=\"#ffd43b\"/><path d=\"M13,1 Q16,1 18,7 L21.5,17 H4.5 L8,7 Q10,1 13,1 Z\" fill=\"#ff922b\"/><path d=\"M13,1 Q16,1 18,7 L18.7,9 H7.3 L8,7 Q10,1 13,1 Z\" fill=\"#fff\"/><circle cx=\"10\" cy=\"22\" r=\"1.2\" fill=\"#3a2318\"/><circle cx=\"16\" cy=\"22\" r=\"1.2\" fill=\"#3a2318\"/><path d=\"M11,24.6 Q13,26.3 15,24.6\" stroke=\"#3a2318\" stroke-width=\"1\" fill=\"none\" stroke-linecap=\"round\"/></svg>"},"frank-pop":{"w":24,"svg":"<svg viewBox=\"0 0 24 44\"><rect x=\"10\" y=\"30\" width=\"4\" height=\"13\" rx=\"2\" fill=\"#e9c48a\"/><rect x=\"2\" y=\"23\" width=\"3\" height=\"4\" rx=\"1\" fill=\"#adb5bd\"/><rect x=\"19\" y=\"23\" width=\"3\" height=\"4\" rx=\"1\" fill=\"#adb5bd\"/><rect x=\"4\" y=\"3\" width=\"16\" height=\"29\" rx=\"3\" fill=\"#8fd16a\"/><path d=\"M4,3 H20 V9 L18.2,7.4 L16.4,9.6 L14.6,7.4 L12.8,9.6 L11,7.4 L9.2,9.6 L7.4,7.4 L5.6,9.6 L4,8 Z\" fill=\"#2b2b2b\"/><path d=\"M6,12 H11 M13,12 H18\" stroke=\"#2f5d1f\" stroke-width=\"1.2\" stroke-linecap=\"round\"/><g class=\"eyes\"><circle cx=\"9\" cy=\"15\" r=\"1.4\" fill=\"#2b2b2b\"/><circle cx=\"15\" cy=\"15\" r=\"1.4\" fill=\"#2b2b2b\"/></g><path d=\"M8.5,21 H15.5\" stroke=\"#2b2b2b\" stroke-width=\"1.2\" stroke-linecap=\"round\"/><path d=\"M10,20 v2 M12,20 v2 M14,20 v2\" stroke=\"#2b2b2b\" stroke-width=\".6\"/><path d=\"M14,26 L18,25 M15,24.8 v2 M17,24.6 v2\" stroke=\"#2f5d1f\" stroke-width=\".7\" stroke-linecap=\"round\"/></svg>"},"vampire-pop":{"w":24,"svg":"<svg viewBox=\"0 0 24 44\"><rect x=\"10\" y=\"30\" width=\"4\" height=\"13\" rx=\"2\" fill=\"#e9c48a\"/><rect x=\"4\" y=\"1\" width=\"16\" height=\"31\" rx=\"7\" fill=\"#e5dbff\"/><path d=\"M4,10 Q4,1 12,1 Q20,1 20,10 Q16,6 12,10.5 Q8,6 4,10 Z\" fill=\"#212529\"/><g class=\"eyes\"><circle cx=\"9\" cy=\"15\" r=\"1.4\" fill=\"#c92a2a\"/><circle cx=\"15\" cy=\"15\" r=\"1.4\" fill=\"#c92a2a\"/></g><path d=\"M9,19.5 Q12,21.5 15,19.5\" stroke=\"#212529\" stroke-width=\"1.1\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M10,20.2 L10.6,22.6 L11.2,20.6 Z M14,20.2 L13.4,22.6 L12.8,20.6 Z\" fill=\"#fff\" stroke=\"#212529\" stroke-width=\".3\"/><path d=\"M1,33 L4,23 L12,29 L20,23 L23,33 Z\" fill=\"#212529\"/><path d=\"M5.5,25.5 L12,30.5 L18.5,25.5 L20,31 H4 Z\" fill=\"#c92a2a\"/></svg>"},"zombie-pop":{"w":24,"svg":"<svg viewBox=\"0 0 24 44\"><rect x=\"10\" y=\"30\" width=\"4\" height=\"13\" rx=\"2\" fill=\"#e9c48a\"/><path d=\"M4,8 Q4,1 11,1 H13 Q14.5,1 15,2.5 Q16,5 18,4 Q19.5,3.8 20,5.5 V28 Q20,32 16,32 H8 Q4,32 4,28 Z\" fill=\"#a3c4a0\"/><path d=\"M5,10 L13,6 M7,9 l-.6,-1.3 M9,8 l-.6,-1.3 M11,7 l-.6,-1.3\" stroke=\"#5f7d5c\" stroke-width=\".7\"/><g class=\"eyes\"><circle cx=\"9\" cy=\"15\" r=\"2.4\" fill=\"#fff\"/><circle cx=\"9.4\" cy=\"15.3\" r=\"1.1\" fill=\"#2b2b2b\"/><circle cx=\"15.5\" cy=\"15.5\" r=\"1.2\" fill=\"#2b2b2b\"/></g><path d=\"M8,21 Q10,19.5 12,21 T16,21\" stroke=\"#2b2b2b\" stroke-width=\"1.1\" fill=\"none\" stroke-linecap=\"round\"/><rect x=\"11.5\" y=\"21\" width=\"1.6\" height=\"1.6\" fill=\"#fff\"/><rect x=\"13\" y=\"24\" width=\"7\" height=\"3\" rx=\"1\" fill=\"#f1e3c8\" transform=\"rotate(-20 16 25)\"/><path d=\"M5,28 Q6,30 5,31\" stroke=\"#7a9c76\" stroke-width=\"1\" fill=\"none\"/></svg>"},"mummy-pop":{"w":24,"svg":"<svg viewBox=\"0 0 24 44\"><rect x=\"10\" y=\"30\" width=\"4\" height=\"13\" rx=\"2\" fill=\"#e9c48a\"/><rect x=\"4\" y=\"1\" width=\"16\" height=\"31\" rx=\"7\" fill=\"#f1f3f5\"/><path d=\"M4,8 L20,5 M4,22 L20,19 M4,27 L20,25 M4,30 L18,28 M6,4 L18,2\" stroke=\"#ced4da\" stroke-width=\"1.6\"/><rect x=\"4\" y=\"11.5\" width=\"16\" height=\"6\" fill=\"#495057\"/><g class=\"eyes\"><circle cx=\"9\" cy=\"14.5\" r=\"1.7\" fill=\"#fff\"/><circle cx=\"15\" cy=\"14.5\" r=\"1.7\" fill=\"#fff\"/><circle cx=\"9.3\" cy=\"14.7\" r=\".8\" fill=\"#2b2b2b\"/><circle cx=\"15.3\" cy=\"14.7\" r=\".8\" fill=\"#2b2b2b\"/></g><path d=\"M4,18.5 L20,16.5\" stroke=\"#dee2e6\" stroke-width=\"2\"/></svg>"},"cauldron":{"w":30,"svg":"<svg viewBox=\"0 0 32 38\"><path d=\"M9,34 l-2,3 M23,34 l2,3\" stroke=\"#2b2140\" stroke-width=\"2.2\" stroke-linecap=\"round\"/><path d=\"M12,36 q1,-3 2,0 q1,-3 2,0 q1,-3 2,0 q1,-3 2,0\" fill=\"#ff922b\"/><path d=\"M4,16 Q2,34 16,35 Q30,34 28,16 Z\" fill=\"#2b2140\"/><ellipse cx=\"16\" cy=\"15\" rx=\"14\" ry=\"4\" fill=\"#3b2a5a\"/><ellipse cx=\"16\" cy=\"14.5\" rx=\"11.5\" ry=\"2.8\" fill=\"#69db7c\"/><circle cx=\"11\" cy=\"12\" r=\"2.4\" fill=\"#69db7c\"/><circle cx=\"19\" cy=\"11\" r=\"3\" fill=\"#69db7c\"/><circle cx=\"15\" cy=\"7\" r=\"1.6\" fill=\"#8ce99a\"/><circle cx=\"21\" cy=\"4\" r=\"1.1\" fill=\"#8ce99a\"/><circle cx=\"18.5\" cy=\"10\" r=\".9\" fill=\"#fff\" opacity=\".7\"/><g class=\"eyes\"><circle cx=\"12\" cy=\"24\" r=\"1.5\" fill=\"#fff\"/><circle cx=\"20\" cy=\"24\" r=\"1.5\" fill=\"#fff\"/></g><path d=\"M12.5,28 Q16,31 19.5,28\" stroke=\"#fff\" stroke-width=\"1.2\" fill=\"none\" stroke-linecap=\"round\"/></svg>"},"ghost":{"w":26,"svg":"<svg viewBox=\"0 0 30 36\"><path d=\"M2,34 C1,14 6,2 15,2 C24,2 29,14 28,34 Q25.5,30 23,34.5 Q20.5,30 18,34.5 Q15.5,30 13,34.5 Q10.5,30 8,34.5 Q5,30 2,34 Z\" fill=\"#fff\" stroke=\"#e9ecef\"/><g class=\"eyes\"><ellipse cx=\"10.5\" cy=\"14\" rx=\"2.3\" ry=\"3\" fill=\"#2b2140\"/><ellipse cx=\"19.5\" cy=\"14\" rx=\"2.3\" ry=\"3\" fill=\"#2b2140\"/></g><ellipse cx=\"15\" cy=\"21\" rx=\"2\" ry=\"2.6\" fill=\"#2b2140\"/><circle cx=\"7\" cy=\"19\" r=\"1.6\" fill=\"#ff8fab\" opacity=\".5\"/><circle cx=\"23\" cy=\"19\" r=\"1.6\" fill=\"#ff8fab\" opacity=\".5\"/></svg>"}};
+        // Halloween main-image rotation, and the jack-o'-lantern slushie.
+        const HALLOWEEN_HERO = ['frank-pop', 'ghost', 'vampire-pop', 'cauldron', 'zombie-pop', 'pumpkin', 'mummy-pop'];
+        const PUMPKIN_SLUSH = '<svg class="slush" viewBox="0 0 120 170" xmlns="http://www.w3.org/2000/svg"><path d="M66,62 L84,10" stroke="#ff4d6d" stroke-width="7" stroke-linecap="round"/><path d="M66,62 L84,10" stroke="#fff" stroke-width="2.4" stroke-dasharray="5 8" stroke-linecap="round"/><path class="sl-a" d="M20,82 C18,58 34,48 46,48 C48,34 62,30 70,36 C84,36 92,46 90,54 C102,56 104,72 100,82 Z"/><path class="sl-b" d="M28,76 C40,64 72,62 94,74 M36,62 C50,52 72,52 86,58 M50,48 C56,42 66,42 72,46" fill="none" stroke-width="6" stroke-linecap="round"/><ellipse cx="60" cy="122" rx="52" ry="42" fill="#ff922b"/><path d="M60,82 Q44,122 60,163 M60,82 Q76,122 60,163 M34,88 Q18,122 34,158 M86,88 Q102,122 86,158" stroke="#e8590c" stroke-width="3" fill="none"/><ellipse cx="60" cy="84" rx="36" ry="8" fill="#d9480f"/><ellipse cx="60" cy="83" rx="32" ry="5.5" class="sl-a"/><path d="M34,112 l10,-13 l10,13 Z M66,112 l10,-13 l10,13 Z" fill="#ffd43b"/><path d="M34,124 l7,9 l7,-6 l6,7 l6,-7 l6,7 l7,-6 l7,-9 q-26,26 -52,0 Z" fill="#ffd43b"/><path d="M98,96 q14,-6 10,-18 q-3,-6 -8,-2" stroke="#5c940d" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M104,82 q8,-2 9,4 q-6,3 -9,-4 Z" fill="#69db7c"/></svg>';
+        if (SEASON === 'halloween') {
+            const oldSlush = document.querySelector('.c-art .slush');
+            if (oldSlush) { oldSlush.insertAdjacentHTML('afterend', PUMPKIN_SLUSH); oldSlush.remove(); slushArt = document.querySelector('.c-art .slush'); }
         }
+        const SPOOKY_KEYS = Object.keys(SPOOKY_ART);
+        const seasonalExtra = () => {
+            let r = Math.random();
+            for (const [name, p] of SEASON_ODDS[SEASON] || []) { if (r < p) return SEASON_ART[name]; r -= p; }
+            return '';
+        };
+
+        // Falling treats behind the form (kept few and slow so phones barely notice)
+        const layer = document.createElement('div');
+        layer.className = 'treat-layer';
+        layer.setAttribute('aria-hidden', 'true');
+        wrap.appendChild(layer);
+        // soldKeys: drawings for sold-out items. They still fall, faded, with a sad face and a 'Sold out' tag.
+        const startFalling = (keys, soldKeys = []) => {
+            layer.innerHTML = '';
+            const sold = new Set(soldKeys);
+            const pool = keys.flatMap(k => isFeatured(k) ? [k, k, k] : [k]).concat(soldKeys).sort(() => Math.random() - 0.5);
+            const order = [...new Set(pool)];
+            if (!order.length) return;
+            for (let i = 0; i < 10; i++) {
+                const el = document.createElement('div');
+                if (SEASON === 'halloween' && (i % 5 === 1 || i % 5 === 3)) {
+                    const s = SPOOKY_ART[SPOOKY_KEYS[Math.floor(Math.random() * SPOOKY_KEYS.length)]];
+                    el.className = 'treat';
+                    el.innerHTML = '<span class="treat-inner"><span class="art">' + s.svg + '</span></span>';
+                    el.style.width = Math.round(s.w * (0.9 + Math.random() * 0.3)) + 'px';
+                    el.style.left = (Math.random() * 92) + '%';
+                    el.style.animationDuration = (20 + Math.random() * 12) + 's';
+                    el.style.animationDelay = (-Math.random() * 32) + 's';
+                    el.querySelector('.treat-inner').style.animationDuration = (4 + Math.random() * 2) + 's';
+                    layer.appendChild(el);
+                    continue;
+                }
+                const key = order[i % order.length];
+                const t = TREAT_ART[key];
+                const isSold = sold.has(key);
+                const mood = isSold ? 'sad' : (SEASON === 'halloween' && Math.random() < .3) ? 'fangs' : MOODS[Math.floor(Math.random() * MOODS.length)];
+                el.className = 'treat' + (isSold ? ' sold' : '');
+                el.dataset.key = key;
+                el.dataset.mood = mood;
+                el.innerHTML = '<span class="treat-inner">' + (isSold ? '' : seasonalExtra()) + '<span class="art">' + withFace(key, t.svg, mood) + '</span></span>' + (isSold ? '<span class="sold-tag">Sold out</span>' : '');
+                el.style.width = Math.round(t.w * (isFeatured(key) ? 1.15 : 0.9) * (0.9 + Math.random() * 0.3)) + 'px';
+                el.style.left = (Math.random() * 92) + '%';
+                el.style.animationDuration = (20 + Math.random() * 12) + 's';
+                el.style.animationDelay = (-Math.random() * 32) + 's';
+                el.querySelector('.treat-inner').style.animationDuration = (4 + Math.random() * 2) + 's';
+                layer.appendChild(el);
+            }
+        };
+
+        // After a request is sent, a little truck drives across the screen.
+        const TRUCK_SVG = '<svg viewBox="0 0 124 76"><path d="M58,6 L64,20 L52,20 Z" fill="#e8a954"/><circle cx="58" cy="7" r="6" fill="#ff8fb1"/><circle cx="56" cy="5" r="1.6" fill="#fff" opacity=".6"/><rect x="6" y="20" width="84" height="38" rx="7" fill="#fff" stroke="#ffadc9" stroke-width="2"/><path d="M90,30 H104 Q110,30 113,38 L117,46 V58 H90 Z" fill="#fff" stroke="#ffadc9" stroke-width="2"/><path d="M93,33 H103 Q107,33 109,39 L111,44 H93 Z" fill="#9be7ff"/><rect x="6" y="44" width="111" height="6" fill="#ff6fa5"/><rect x="18" y="26" width="44" height="14" rx="2" fill="#9be7ff"/><path d="M16,26 h48 v3 q-3,4 -6,0 q-3,4 -6,0 q-3,4 -6,0 q-3,4 -6,0 q-3,4 -6,0 q-3,4 -6,0 q-3,4 -6,0 q-3,4 -6,0 Z" fill="#ff6fa5"/><rect x="68" y="26" width="16" height="14" rx="2" fill="#ffe3ef"/><circle cx="76" cy="33" r="4" fill="#ffd43b"/><circle cx="76" cy="33" r="1.6" fill="#ff6fa5"/><circle cx="112" cy="51" r="2" fill="#ffd43b"/><g class="wheel"><circle cx="28" cy="60" r="9" fill="#3a3a48"/><circle cx="28" cy="60" r="4" fill="#d0d4e0"/><path d="M28,56 V64 M24,60 H32" stroke="#3a3a48" stroke-width="1.4"/></g><g class="wheel"><circle cx="100" cy="60" r="9" fill="#3a3a48"/><circle cx="100" cy="60" r="4" fill="#d0d4e0"/><path d="M100,56 V64 M96,60 H104" stroke="#3a3a48" stroke-width="1.4"/></g></svg>';
+        const truckDriveBy = () => {
+            if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+            const t = document.createElement('div');
+            t.className = 'truck-run';
+            t.setAttribute('aria-hidden', 'true');
+            t.innerHTML = '<div class="truck-bubble">On our way! \ud83c\udf66</div>' + TRUCK_SVG;
+            document.body.appendChild(t);
+            t.addEventListener('animationend', (ev) => { if (ev.target === t) t.remove(); });
+        };
+
+
+        // Main image: cycles between the ice cream sandwich and other treats. Each has a happy face that blinks.
+        const heroFace = (x, y, s, dark) => {
+            const ink = dark ? '#fff7ec' : '#3a2318';
+            return '<g transform="translate(' + x + ' ' + y + ') scale(' + s + ')"><circle cx="-5" cy="2" r="1.3" fill="#ff8fab" opacity=".6"/><circle cx="5" cy="2" r="1.3" fill="#ff8fab" opacity=".6"/><g class="eyes"><circle cx="-3" cy="-1.5" r="1.4" fill="' + ink + '"/><circle cx="3" cy="-1.5" r="1.4" fill="' + ink + '"/></g><path d="M-2.6,1.4 Q0,4.4 2.6,1.4" stroke="' + ink + '" stroke-width="1.2" fill="none" stroke-linecap="round"/></g>';
+        };
+        const heroWithFace = (key, svg) => {
+            const a = FACE_ANCHORS[key];
+            return a ? svg.replace(/<\/svg>$/, heroFace(a[0], a[1], a[2], a[3]) + '</svg>') : svg;
+        };
+        const hero = document.querySelector('.c-art .hero-bar');
+        let heroTimer = null;
+        const startHero = (keys, withSandwich) => {
+            if (!hero) return;
+            hero.querySelectorAll('.hb-item.extra').forEach(e => e.remove());
+            keys.forEach(k => {
+                const d = document.createElement('div');
+                d.className = 'hb-item extra';
+                d.innerHTML = heroWithFace(k, (TREAT_ART[k] || SPOOKY_ART[k]).svg);
+                hero.appendChild(d);
+            });
+            const base = hero.querySelector('.hb-item.base');
+            const baseArt = base && base.querySelector('svg > g');
+            if (SEASON === 'halloween' && base && !base.querySelector('.hero-wings')) base.insertAdjacentHTML('afterbegin', '<span class="hero-wings" aria-hidden="true">' + SEASON_ART.wings.replace(/^<span class="acc-wings">|<\/span>$/g, '') + '</span>');
+            if (baseArt && !base.dataset.face) { baseArt.insertAdjacentHTML('beforeend', heroFace(90, 46, 3.4, 1)); base.dataset.face = '1'; }
+            const items = [...(withSandwich ? [base] : []), ...hero.querySelectorAll('.hb-item.extra')];
+            hero.querySelectorAll('.hb-item').forEach(e => e.classList.remove('on'));
+            if (!items.length) return;
+            let idx = 0;
+            items[0].classList.add('on');
+            clearInterval(heroTimer);
+            heroTimer = setInterval(() => {
+                if (!hero.isConnected) { clearInterval(heroTimer); return; }
+                if (document.hidden) return;
+                items[idx].classList.remove('on');
+                idx = (idx + 1) % items.length;
+                items[idx].classList.add('on');
+            }, 14000);
+        };
+
+        startFalling(ALL_TREATS);
+        startHero(SEASON === 'halloween' ? HALLOWEEN_HERO : HERO_DEFAULT, true);
+
+        // For the future inventory feature: call with the names of in-stock items,
+        // e.g. window.setTreatsFromInventory(['Fudge Bar', { name: 'Cherry Slush', soldOut: true }]).
+        // Only matching drawings will fall and rotate. Unknown names are ignored.
+        // Pass a list of item names, or objects like { name: 'Fudge Bar', soldOut: true }.
+        window.setTreatsFromInventory = (items) => {
+            const list = (items || []).map(it => typeof it === 'string' ? { name: it, soldOut: false } : it);
+            const inStock = treatKeysFor(list.filter(i => !i.soldOut).map(i => i.name));
+            const soldOut = treatKeysFor(list.filter(i => i.soldOut).map(i => i.name)).filter(k => !inStock.includes(k));
+            if (!inStock.length && !soldOut.length) return;
+            startFalling(inStock, soldOut);
+            startHero(inStock.filter(k => !k.startsWith('slush-') && k !== 'ice-cream-sandwich'), inStock.includes('ice-cream-sandwich'));
+        };
 
         document.getElementById('cust-submit').onclick = async () => {
             const party = parseInt(document.getElementById('cust-party').value, 10);
@@ -613,6 +872,7 @@
                 });
                 statusEl.style.color = '#2b8a3e';
                 statusEl.textContent = "Request sent! We'll see you soon 🍧";
+                truckDriveBy();
                 document.getElementById('cust-party').value = '';
                 document.getElementById('cust-notes').value = '';
             } catch (err) {
