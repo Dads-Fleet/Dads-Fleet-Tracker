@@ -80,6 +80,42 @@
         .stopbar { background: #fef2f2; border: 1px solid #fecaca; border-radius: 10px; padding: 10px 12px; margin-bottom: 8px; }
         .pop-stop { margin-top: 6px; background: #dc2626; color: #fff; border: none; border-radius: 6px; padding: 6px 10px; font-weight: 600; cursor: pointer; }
         .link-btn.stop-link { color: #dc2626; }
+        /* ---------- staff panels, driver map & dispatch ---------- */
+        .topbar { flex-wrap: wrap; }
+        .topbar-right { display: flex; align-items: center; gap: 12px; margin-left: auto; }
+        .panel-switch { width: auto; margin: 0; padding: 6px 8px; font-size: 14px; border-radius: 8px; }
+        .driver-map { height: 300px; width: 100%; border-radius: 10px; margin: 10px 0 4px; background: #e2e8f0; }
+        .map-tools { display: flex; gap: 16px; justify-content: flex-end; flex-wrap: wrap; margin-bottom: 8px; }
+        .dispatch-card { background: #fff7ed; border: 2px solid #fb923c; border-radius: 12px; padding: 12px 14px; margin: 10px 0; }
+        .dispatch-card h3 { margin: 0 0 2px; }
+        .stop-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-top: 1px solid #fed7aa; }
+        .stop-row.done .stop-main { opacity: .55; text-decoration: line-through; }
+        .stop-num { flex: 0 0 26px; height: 26px; border-radius: 50%; background: #ea580c; color: #fff; font-weight: 700; display: flex; align-items: center; justify-content: center; font-size: 13px; }
+        .stop-num.done { background: #16a34a; }
+        .stop-main { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+        .stop-main small { color: #64748b; display: block; }
+        .btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+        .btn-row .action-btn { flex: 1; margin: 0; width: auto; min-width: 140px; }
+        .btn-green { background: #16a34a !important; }
+        .btn-orange { background: #ea580c !important; }
+        .mini-btn { background: #fff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 6px 10px; cursor: pointer; font-size: 14px; white-space: nowrap; }
+        .mini-btn:disabled { opacity: .4; cursor: default; }
+        .alert-overlay { position: fixed; inset: 0; background: rgba(15,23,42,.6); z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 16px; }
+        .alert-box { background: #fff; border-radius: 16px; max-width: 440px; width: 100%; max-height: 90vh; overflow: auto; padding: 18px; box-shadow: 0 10px 40px rgba(0,0,0,.35); animation: alertPop .35s ease-out; }
+        .alert-box h2 { margin: 0 0 6px; color: #c2410c; }
+        @keyframes alertPop { from { transform: scale(.85); opacity: 0; } to { transform: none; opacity: 1; } }
+        .stop-pin { background: #ea580c; color: #fff; border: 2px solid #fff; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; box-shadow: 0 2px 6px rgba(0,0,0,.35); }
+        .stop-pin.draft { background: #7c3aed; }
+        .stop-pin.done { background: #16a34a; }
+        .me-dot { width: 18px; height: 18px; border-radius: 50%; background: #2563eb; border: 3px solid #fff; box-shadow: 0 0 0 3px rgba(37,99,235,.3), 0 2px 6px rgba(0,0,0,.3); }
+        details.dispatch-box { background: #f5f3ff; border-color: #c4b5fd; }
+        .draft-row { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px solid #e9d5ff; }
+        .search-results { border: 1px solid #c4b5fd; border-radius: 8px; background: #fff; margin: -4px 0 10px; overflow: hidden; }
+        .search-results button { display: block; width: 100%; text-align: left; background: none; border: none; border-bottom: 1px solid #ede9fe; padding: 10px; font-size: 14px; cursor: pointer; }
+        .search-results button:last-child { border-bottom: none; }
+        body.map-tap-on #admin-map { cursor: crosshair; outline: 3px solid #7c3aed; }
+        .disp-card { background: #fff; border: 1px solid #ddd6fe; border-radius: 10px; padding: 10px 12px; margin: 8px 0; }
+        button.action-btn:disabled { opacity: .55; cursor: default; }
         details { border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 14px; margin-top: 14px; }
         summary { cursor: pointer; font-weight: 700; }
 
@@ -106,9 +142,9 @@
         .slush .sl-a { fill: var(--sl-a, #d62839); transition: fill 2s ease; }
         .slush .sl-b { stroke: var(--sl-b, #ff8a95); transition: stroke 2s ease; }
         .treat-layer { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: -1; }
-        .treat { position: absolute; top: -80px; opacity: .65; animation: treatFall 24s linear infinite; will-change: transform; }
+        .treat { position: absolute; top: -130px; opacity: .8; animation: treatFall 24s linear infinite; will-change: transform; }
         .treat-inner svg { width: 100%; height: auto; display: block; }
-        @keyframes treatFall { from { transform: translateY(-80px); } to { transform: translateY(calc(100vh + 100px)); } }
+        @keyframes treatFall { from { transform: translateY(-130px); } to { transform: translateY(calc(100vh + 170px)); } }
         .treat-inner { position: relative; display: block; isolation: isolate; animation: treatSway 4.5s ease-in-out infinite alternate; }
         .treat-inner > .art { position: relative; z-index: 1; display: block; }
         .acc-wings { position: absolute; left: -55%; width: 210%; top: 12%; z-index: 0; }
@@ -251,7 +287,7 @@
             <path d="M0,18 Q31,0 62,18 T125,18 T187,18 T250,18 T312,18 T375,18 T437,18 T500,18 V36 H0 Z" fill="#ffb3cf" opacity=".6"/>
         </svg>
         <a class="staff-link" href="#staff">Staff login</a>
-        <p style="text-align:center; font-size:10px; color:#b49bb0; margin:6px 0 0;">v popup-fix · Oct 11</p>
+        <p style="text-align:center; font-size:10px; color:#b49bb0; margin:6px 0 0;">v dispatch · Oct 15</p>
     </div>
 </template>
 
@@ -280,13 +316,20 @@
                 <input type="password" id="login-pass" class="pin-input" placeholder="• • • •" inputmode="numeric" autocomplete="off">
                 <label for="login-who">Who are you?</label>
                 <select id="login-who"></select>
+                <div id="panel-wrap" style="display:none;">
+                    <label for="login-panel">Open which panel?</label>
+                    <select id="login-panel">
+                        <option value="admin">🖥️ Admin panel (dispatch console)</option>
+                        <option value="driver">🚚 Driver panel (map, stops, sales)</option>
+                    </select>
+                </div>
                 <button class="action-btn" id="login-btn">Sign In</button>
                 <p class="err" id="login-err"></p>
                 <button class="link-btn" id="forgot-pin" style="display:block; margin:0 auto 10px;">Forgot your PIN?</button>
             </div>
             <button class="link-btn" id="install-link" style="display:none; margin:0 auto 10px;">📲 Add to home screen</button>
             <a class="link-btn" href="#customer" style="display:block; text-align:center; text-decoration:none;">← Back to customer page</a>
-            <p class="muted" style="text-align:center; font-size:11px; margin:14px 0 0;">Version popup-fix · Oct 11</p>
+            <p class="muted" style="text-align:center; font-size:11px; margin:14px 0 0;">Version dispatch · Oct 15</p>
         </div>
     </div>
 </template>
@@ -312,15 +355,33 @@
         <div class="panel">
             <div class="topbar">
                 <small id="driver-who"></small>
-                <button class="link-btn" id="driver-logout">Sign out</button>
+                <div class="topbar-right">
+                    <select id="panel-switch" class="panel-switch" style="display:none;" aria-label="Switch panel">
+                        <option value="admin">🖥️ Admin panel</option>
+                        <option value="driver">🚚 Driver panel</option>
+                    </select>
+                    <button class="link-btn" id="driver-logout">Sign out</button>
+                </div>
+            </div>
+            <div id="drive-pick" style="display:none;">
+                <label for="drive-truck" style="font-weight:600;">Which truck are you driving?</label>
+                <select id="drive-truck" style="margin:4px 0 8px;"></select>
             </div>
             <h2 id="driver-title">Truck</h2>
+            <div id="driver-main">
 
             <button class="action-btn" id="gps-btn">Start Shift (share location)</button>
             <div id="loc-help" class="loc-help" style="display:none;"></div>
             <p id="driver-status" style="font-weight:600; text-align:center;">Status: Offline</p>
             <p id="stop-line" style="text-align:center; color:#475569; min-height:1.2em;"></p>
             <p class="muted" style="text-align:center; font-size:13px; margin:0 0 8px;">📱 Keep this app open on screen while you drive (phone on a charger). Location pauses if the phone locks or you switch apps.</p>
+
+            <div id="dispatch-card" class="dispatch-card" style="display:none;"></div>
+            <div id="driver-map" class="driver-map"></div>
+            <div class="map-tools">
+                <button class="link-btn" id="alerts-btn" style="display:none;">🔔 Turn on dispatch alerts</button>
+                <button class="link-btn" id="locate-btn">📍 Show my location</button>
+            </div>
 
             <div id="sales-card" style="border-top:1px solid #e2e8f0; margin-top:12px; padding-top:12px;">
                 <h3 style="margin:0 0 6px;">Log a sale</h3>
@@ -339,6 +400,7 @@
                 <button class="link-btn" id="pin-request-btn">Need a new PIN? Ask dispatch</button>
                 <p class="muted" id="pin-request-msg" style="margin:6px 0 0;"></p>
             </div>
+            </div>
         </div>
     </div>
 </template>
@@ -348,7 +410,13 @@
         <div class="panel">
             <div class="topbar">
                 <small id="admin-who"></small>
-                <button class="link-btn" id="admin-logout">Sign out</button>
+                <div class="topbar-right">
+                    <select id="panel-switch" class="panel-switch" style="display:none;" aria-label="Switch panel">
+                        <option value="admin">🖥️ Admin panel</option>
+                        <option value="driver">🚚 Driver panel</option>
+                    </select>
+                    <button class="link-btn" id="admin-logout">Sign out</button>
+                </div>
             </div>
             <h2 style="margin:4px 0;">Dispatch Console</h2>
             <p class="err" id="admin-err"></p>
@@ -368,6 +436,26 @@
                 </div>
                 <button class="link-btn stop-link" id="clear-all-btn" style="margin-top:10px;">Clear all trucks off the map</button>
             </div>
+
+            <details id="dispatch-section" class="dispatch-box" open>
+                <summary>📍 Send a truck to stops</summary>
+                <p class="muted" style="margin:6px 0 0;">Plan one or more stops and send them. The driver's phone rings, shows the stops and the route on their map, and can open turn-by-turn directions.</p>
+                <label for="dispatch-truck" style="font-weight:600; display:block; margin-top:10px;">Truck</label>
+                <select id="dispatch-truck" style="margin:4px 0 10px;"></select>
+                <label for="dispatch-addr" style="font-weight:600;">Add a stop</label>
+                <div style="display:flex; gap:8px; align-items:center;">
+                    <input type="text" id="dispatch-addr" placeholder="Address or place, e.g. 100 Main St, Austin TX" style="margin:4px 0 10px;" autocomplete="off">
+                    <button class="action-btn" id="dispatch-find" type="button" style="width:auto; margin:4px 0 10px; white-space:nowrap;">Find</button>
+                </div>
+                <div id="dispatch-results" class="search-results" style="display:none;"></div>
+                <button class="link-btn" id="dispatch-tap" type="button" style="margin:0 0 8px;">🗺️ Tap the map to drop a stop</button>
+                <div id="dispatch-stops"></div>
+                <label for="dispatch-note" style="font-weight:600; display:block; margin-top:8px;">Message to the driver (optional)</label>
+                <input type="text" id="dispatch-note" maxlength="120" placeholder="e.g. Birthday party, use the side entrance" style="margin:4px 0 10px;" autocomplete="off">
+                <button class="action-btn" id="dispatch-send" type="button" style="margin:4px 0 8px;">Send stops to truck</button>
+                <p class="err" id="dispatch-err"></p>
+                <div id="dispatch-active"></div>
+            </details>
 
             <h3 style="margin-top:6px;">Trucks</h3>
             <div id="admin-trucks-list"></div>
@@ -442,7 +530,7 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-    import { initializeFirestore, collection, addDoc, setDoc, deleteDoc, doc, onSnapshot, getDoc, getDocs, increment, serverTimestamp, query, orderBy, limit, where }
+    import { initializeFirestore, collection, addDoc, setDoc, deleteDoc, doc, onSnapshot, getDoc, getDocs, increment, serverTimestamp, query, orderBy, limit, where, deleteField }
         from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
     import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, updatePassword, deleteUser, EmailAuthProvider, reauthenticateWithCredential }
         from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
@@ -509,6 +597,100 @@
         const dLat = (bLat - aLat) * rad, dLng = (bLng - aLng) * rad;
         const h = Math.sin(dLat / 2) ** 2 + Math.cos(aLat * rad) * Math.cos(bLat * rad) * Math.sin(dLng / 2) ** 2;
         return 2 * R * Math.asin(Math.sqrt(h));
+    }
+    const fmtMiles = (m) => { const mi = m / 1609.344; return (mi < 10 ? mi.toFixed(1) : String(Math.round(mi))) + ' mi'; };
+    // Removing a Leaflet map in the middle of a zoom animation throws an error a moment later; this avoids it.
+    function safeRemoveMap(m) { try { m.stop(); m._animatingZoom = false; m.remove(); } catch (e) {} }
+
+    // ---------- Staff panels ----------
+    // Admins can open the Admin panel (dispatch console) or the Driver panel. Drivers only get the Driver panel.
+    const PANEL_KEY = 'staffPanel';
+    function getPanel() { try { return localStorage.getItem(PANEL_KEY) === 'driver' ? 'driver' : 'admin'; } catch (e) { return 'admin'; } }
+    function setPanel(p) { try { localStorage.setItem(PANEL_KEY, p === 'driver' ? 'driver' : 'admin'); } catch (e) {} }
+    function openAdminHome(user, adminOpts) {
+        cleanup(); cleanup = () => {};
+        if (getPanel() === 'driver') showDriver(user, null, adminOpts); else showAdmin(user, adminOpts);
+    }
+    function switchPanel(user, adminOpts, panel) { setPanel(panel); openAdminHome(user, adminOpts); }
+    let cachedAdminName = '';
+    async function adminDisplayName(opts) {
+        if (opts && opts.name) return String(opts.name);
+        if (cachedAdminName) return cachedAdminName;
+        try { const s = await getDoc(doc(db, 'setup', 'admin')); if (s.exists()) cachedAdminName = String(s.data().username || ''); } catch (e) {}
+        return cachedAdminName || 'Admin';
+    }
+
+    // ---------- Routes & places (free services, no keys) ----------
+    // Road routes come from the public OSRM server; address search from OpenStreetMap (Nominatim).
+    // If either is down, the app falls back gracefully (straight lines / tap the map instead).
+    const routeCache = new Map();
+    async function fetchRoute(pts) {
+        const key = pts.map(p => p[0].toFixed(5) + ',' + p[1].toFixed(5)).join(';');
+        if (routeCache.has(key)) return routeCache.get(key);
+        const coords = pts.map(p => p[1].toFixed(6) + ',' + p[0].toFixed(6)).join(';');
+        const ctrl = new AbortController();
+        const timer = setTimeout(() => ctrl.abort(), 9000);
+        try {
+            const res = await fetch('https://router.project-osrm.org/route/v1/driving/' + coords + '?overview=full&geometries=geojson', { signal: ctrl.signal });
+            if (!res.ok) return null;
+            const j = await res.json();
+            const r0 = j && j.code === 'Ok' && Array.isArray(j.routes) ? j.routes[0] : null;
+            if (!r0 || !r0.geometry || !Array.isArray(r0.geometry.coordinates) || r0.geometry.coordinates.length < 2) return null;
+            const out = { coords: r0.geometry.coordinates.map(c => [c[1], c[0]]), distance: Number(r0.distance) || 0, duration: Number(r0.duration) || 0 };
+            routeCache.set(key, out);
+            return out;
+        } catch (e) { return null; } finally { clearTimeout(timer); }
+    }
+    const shortPlace = (s) => String(s || '').split(',').map(x => x.trim()).filter(Boolean).slice(0, 3).join(', ').slice(0, 80);
+    async function geocode(q, bounds) {
+        const ll = String(q).match(/^\s*(-?\d{1,2}(?:\.\d+)?)\s*,\s*(-?\d{1,3}(?:\.\d+)?)\s*$/);
+        if (ll) {
+            const lat = parseFloat(ll[1]), lng = parseFloat(ll[2]);
+            if (Math.abs(lat) <= 90 && Math.abs(lng) <= 180) return [{ lat, lng, label: lat.toFixed(5) + ', ' + lng.toFixed(5) }];
+        }
+        let url = 'https://nominatim.openstreetmap.org/search?format=jsonv2&limit=5&countrycodes=us&q=' + encodeURIComponent(q);
+        if (bounds) url += '&viewbox=' + [bounds.getWest(), bounds.getNorth(), bounds.getEast(), bounds.getSouth()].map(n => n.toFixed(4)).join(',');
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('search failed ' + res.status);
+        const j = await res.json();
+        return (Array.isArray(j) ? j : []).map(r => ({ lat: parseFloat(r.lat), lng: parseFloat(r.lon), label: shortPlace(r.display_name) }))
+            .filter(r => isFinite(r.lat) && isFinite(r.lng));
+    }
+    async function reverseGeocode(lat, lng) {
+        try {
+            const res = await fetch('https://nominatim.openstreetmap.org/reverse?format=jsonv2&zoom=18&lat=' + lat.toFixed(6) + '&lon=' + lng.toFixed(6));
+            if (!res.ok) return '';
+            const j = await res.json();
+            return j && j.display_name ? shortPlace(j.display_name) : '';
+        } catch (e) { return ''; }
+    }
+
+    // ---------- Alert sound ----------
+    // Phones only allow sound after the person has tapped the page once, so the first tap "unlocks" it.
+    let audioCtx = null;
+    function unlockAudio() {
+        try {
+            if (!audioCtx) { const AC = window.AudioContext || window.webkitAudioContext; if (AC) audioCtx = new AC(); }
+            if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+        } catch (e) {}
+    }
+    function ring() {
+        try {
+            unlockAudio();
+            const ctx = audioCtx;
+            if (!ctx) return;
+            const t0 = ctx.currentTime + 0.05;
+            [0, 0.22, 0.44, 0.95, 1.17, 1.39].forEach((dt, i) => {
+                const o = ctx.createOscillator(), g = ctx.createGain();
+                o.type = 'square';
+                o.frequency.value = i % 3 === 2 ? 1320 : 880;
+                g.gain.setValueAtTime(0.0001, t0 + dt);
+                g.gain.exponentialRampToValueAtTime(0.22, t0 + dt + 0.02);
+                g.gain.exponentialRampToValueAtTime(0.0001, t0 + dt + 0.18);
+                o.connect(g); g.connect(ctx.destination);
+                o.start(t0 + dt); o.stop(t0 + dt + 0.2);
+            });
+        } catch (e) {}
     }
 
     function mount(id) {
@@ -853,7 +1035,7 @@
                     const s = SPOOKY_ART[seasonBag[seasonBagIdx++ % seasonBag.length]];
                     el.className = 'treat';
                     el.innerHTML = '<span class="treat-inner"><span class="art">' + s.svg + '</span></span>';
-                    el.style.width = Math.round(s.w * (0.9 + Math.random() * 0.3)) + 'px';
+                    el.style.width = Math.round(s.w * 1.5 * (0.9 + Math.random() * 0.3)) + 'px';
                     el.style.left = (Math.random() * 92) + '%';
                     el.style.animationDuration = (20 + Math.random() * 12) + 's';
                     el.style.animationDelay = (-Math.random() * 32) + 's';
@@ -869,7 +1051,7 @@
                 el.dataset.key = key;
                 el.dataset.mood = mood;
                 el.innerHTML = '<span class="treat-inner">' + (isSold ? '' : seasonalExtra()) + '<span class="art">' + withFace(key, t.svg, mood, isSold ? '' : seasonalGlasses()) + '</span></span>' + (isSold ? '<span class="sold-tag">Sold out</span>' : '');
-                el.style.width = Math.round(t.w * (isFeatured(key) ? 1.15 : 0.9) * (0.9 + Math.random() * 0.3)) + 'px';
+                el.style.width = Math.round(t.w * 1.5 * (isFeatured(key) ? 1.15 : 0.9) * (0.9 + Math.random() * 0.3)) + 'px';
                 el.style.left = (Math.random() * 92) + '%';
                 el.style.animationDuration = (20 + Math.random() * 12) + 's';
                 el.style.animationDelay = (-Math.random() * 32) + 's';
@@ -984,7 +1166,7 @@
             cleanup(); cleanup = () => {};
             if (!user) { showLogin(); return; }
             const local = (user.email || '').split('@')[0];
-            if (user.email === ADMIN_EMAIL) { showAdmin(user, { primary: true }); }
+            if (user.email === ADMIN_EMAIL) { openAdminHome(user, { primary: true }); }
             else if (/^truck\d{1,2}$/.test(local) && user.email === local + '@' + DOMAIN) { showDriver(user, local); }
             else if (EXTRA_ADMIN_RE.test(user.email || '')) { routeExtraAdmin(user); }
             else { loginNotice = 'That account is not set up for this app.'; signOut(auth); }
@@ -1001,7 +1183,7 @@
         if (!rec.exists()) { loginNotice = 'This admin login has been removed. Ask the main admin to add you again.'; signOut(auth); return; }
         const info = rec.data();
         if (info.pending) showSetPassword(user, info);
-        else showAdmin(user, { primary: false, name: info.name });
+        else openAdminHome(user, { primary: false, name: info.name });
     }
 
     function showSetPassword(user, info) {
@@ -1019,7 +1201,7 @@
                 await updatePassword(user, a);
                 await setDoc(doc(db, 'admins', user.uid), { pending: false }, { merge: true });
                 await deleteDoc(doc(db, 'adminCodes', user.uid)).catch(() => {});
-                showAdmin(user, { primary: false, name: info.name });
+                openAdminHome(user, { primary: false, name: info.name });
             } catch (e) {
                 $('setpw-btn').disabled = false;
                 e1.textContent = e.code === 'auth/requires-recent-login'
@@ -1138,11 +1320,13 @@
         let remembered = '';
         try { remembered = localStorage.getItem('staffWho') || ''; } catch (e) {}
         if ([...whoSel.options].some(o => o.value === remembered && !o.disabled)) whoSel.value = remembered;
+        $('login-panel').value = getPanel();
 
         // The first box is a 4-digit PIN for drivers, a password for admins, or a setup code on an admin's first sign-in.
         const isAdminPick = () => whoSel.value === 'admin' || whoSel.value.startsWith('adm:');
         const applyWho = () => {
             const admin = isAdminPick();
+            $('panel-wrap').style.display = admin ? '' : 'none';
             const extra = extraByKey[whoSel.value];
             const p = $('login-pass');
             p.classList.toggle('pin-input', !admin);
@@ -1183,6 +1367,7 @@
                 if (!/^\d{4}$/.test(secret)) { errEl.textContent = 'Enter your 4-digit PIN.'; return; }
                 email = who + '@' + DOMAIN; password = pinPassword(secret, who); label = truckName(who);
             }
+            if (isAdminPick()) setPanel($('login-panel').value);
             $('login-btn').disabled = true;
             try {
                 await signInWithEmailAndPassword(auth, email, password);
@@ -1213,15 +1398,63 @@
     }
 
     // ---------- DRIVER ----------
-    function showDriver(user, truckId) {
+    // adminOpts is set when an admin opens the Driver panel (they pick which truck they're driving).
+    function showDriver(user, truckId, adminOpts) {
         mount('tpl-driver');
         const $ = (id) => document.getElementById(id);
+        const asAdmin = !!adminOpts;
+        const driverState = { isTracking: () => false };
+        if (asAdmin) {
+            const ps = $('panel-switch');
+            ps.style.display = ''; ps.value = 'driver';
+            ps.onchange = () => {
+                if (driverState.isTracking() && !confirm('Switching to the admin panel ends your shift (location sharing stops). Switch anyway?')) { ps.value = 'driver'; return; }
+                switchPanel(user, adminOpts, ps.value);
+            };
+            $('pin-request-btn').parentElement.style.display = 'none';
+            $('drive-pick').style.display = '';
+            if (!truckId) { try { truckId = localStorage.getItem('adminDriveTruck') || null; } catch (e) {} }
+            const sel = $('drive-truck');
+            const addOpt = (value, text) => { const o = document.createElement('option'); o.value = value; o.textContent = text; sel.appendChild(o); };
+            addOpt('', '— Pick the truck you are driving —');
+            if (truckId) { addOpt(truckId, truckName(truckId)); sel.value = truckId; }
+            getDocs(collection(db, 'trucks')).then(snap => {
+                if (!$('drive-truck')) return;
+                const list = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => byTruckNum(a.id, b.id));
+                sel.innerHTML = '';
+                addOpt('', list.length ? '— Pick the truck you are driving —' : 'No trucks yet (add them in the Admin panel)');
+                list.forEach(t => addOpt(t.id, truckName(t.id) + (t.driverName ? ' — ' + t.driverName : '') + (t.city ? ' (' + t.city + ')' : '')));
+                if (truckId && !list.some(t => t.id === truckId)) addOpt(truckId, truckName(truckId) + ' (removed)');
+                sel.value = truckId || '';
+            }).catch(() => {});
+            sel.onchange = () => {
+                if (driverState.isTracking() && !confirm('Changing trucks ends your current shift. Continue?')) { sel.value = truckId || ''; return; }
+                try { localStorage.setItem('adminDriveTruck', sel.value); } catch (e) {}
+                cleanup(); cleanup = () => {};
+                showDriver(user, sel.value || null, adminOpts);
+            };
+            adminDisplayName(adminOpts).then(n => {
+                if ($('driver-who')) $('driver-who').textContent = 'Signed in as ' + n + ' (admin)' + (truckId ? ' · driving ' + truckName(truckId) : '');
+            });
+            if (!truckId) {
+                $('driver-title').textContent = 'Driver panel';
+                $('driver-who').textContent = 'Signed in as admin';
+                $('driver-main').style.display = 'none';
+                $('driver-logout').onclick = () => signOut(auth);
+                return;
+            }
+        }
         $('driver-title').textContent = truckName(truckId);
-        $('driver-who').textContent = 'Signed in as ' + truckName(truckId);
+        if (!asAdmin) $('driver-who').textContent = 'Signed in as ' + truckName(truckId);
 
-        // Driver name comes from the admin's truck list.
+        // Driver name comes from the admin's truck list (an admin driving a truck goes by their own name).
         let driverName = '';
-        getDoc(doc(db, 'trucks', truckId)).then(s => {
+        if (asAdmin) {
+            adminDisplayName(adminOpts).then(n => {
+                driverName = n;
+                if ($('driver-title')) $('driver-title').textContent = truckName(truckId) + ' — ' + n + ' driving';
+            });
+        } else getDoc(doc(db, 'trucks', truckId)).then(s => {
             if (!s.exists()) return;
             driverName = String(s.data().driverName || '');
             if (driverName && $('driver-title')) {
@@ -1243,9 +1476,274 @@
             stopLine.style.display = config.stops ? '' : 'none';
         }
         applyConfig();
+
+        // ----- live map: where you are, plus any stops dispatch sent you -----
+        driverState.isTracking = () => tracking;
+        let alive = true, map = null, meMarker = null, meCircle = null, me = null, follow = true, viewWatch = null, lastCardRender = 0;
+        let dispatch = null, doneSet = new Set(), stopLayer = null, routeLayer = null, routeInfo = '', routeNeedsOrigin = false, routeReq = 0, routePending = false;
+        let alertEl = null, beepTimer = null, titleTimer = null, titleBase = '';
+        const doneKey = (id) => 'dispatchDone_' + truckId + '_' + id;
+        const seenKey = 'dispatchSeen_' + truckId;
+        document.addEventListener('pointerdown', unlockAudio, { passive: true });
+
+        loadLeaflet().then(() => {
+            if (!alive || !$('driver-map')) return;
+            map = L.map('driver-map').setView([39.5, -98.35], 4);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' }).addTo(map);
+            map.on('dragstart', () => { follow = false; });
+            setTimeout(() => { if (map) map.invalidateSize(); }, 300);
+            if (me) { const m = me; me = null; showMe(m.lat, m.lng, m.acc); }
+            renderDispatchLayers();
+            if (routePending || dispatch) updateRoute(true);
+        }).catch(() => {
+            const m = $('driver-map');
+            if (m) m.innerHTML = '<p class="muted" style="padding:14px; margin:0;">The map could not load (no connection?). Your location is still shared and stops are listed above.</p>';
+        });
+
+        function showMe(lat, lng, acc) {
+            const first = !me;
+            me = { lat, lng, acc };
+            if (dispatch && Date.now() - lastCardRender > 15000) renderDispatch(); // refresh "x mi away"
+            if (!map) return;
+            const ll = [lat, lng];
+            if (!meMarker) {
+                meMarker = L.marker(ll, { icon: L.divIcon({ className: 'me-icon', html: '<div class="me-dot"></div>', iconSize: [18, 18], iconAnchor: [9, 9] }), zIndexOffset: 1000, keyboard: false })
+                    .bindPopup('You are here').addTo(map);
+                meCircle = L.circle(ll, { radius: acc || 30, color: '#2563eb', weight: 1, fillOpacity: 0.1 }).addTo(map);
+            } else {
+                meMarker.setLatLng(ll); meCircle.setLatLng(ll); meCircle.setRadius(acc || 30);
+            }
+            if (first) { if (dispatch) fitDispatch(); else map.setView(ll, 15); }
+            else if (follow) map.panTo(ll);
+            if (routeNeedsOrigin && dispatch) updateRoute(false);
+        }
+
+        // Shows your spot on the map even when you're not on shift (only if the phone already allows location).
+        function startViewWatch() {
+            if (!alive || tracking || viewWatch !== null || !('geolocation' in navigator)) return;
+            viewWatch = navigator.geolocation.watchPosition(
+                (p) => { if (!tracking) showMe(p.coords.latitude, p.coords.longitude, Math.round(p.coords.accuracy)); },
+                (err) => { if (err && err.code === 1) { stopViewWatch(); if ($('locate-btn')) $('locate-btn').textContent = '📍 Location is blocked for this site'; } },
+                { enableHighAccuracy: true, maximumAge: 15000, timeout: 30000 });
+        }
+        function stopViewWatch() { if (viewWatch !== null) { navigator.geolocation.clearWatch(viewWatch); viewWatch = null; } }
+        try {
+            if (navigator.permissions && navigator.permissions.query) {
+                navigator.permissions.query({ name: 'geolocation' }).then(st => { if (st.state === 'granted') startViewWatch(); }).catch(() => {});
+            }
+        } catch (e) {}
+        $('locate-btn').onclick = () => {
+            follow = true;
+            if (me && map) map.setView([me.lat, me.lng], Math.max(map.getZoom(), 15));
+            if (!tracking) startViewWatch();
+        };
+
+        // ----- dispatch alerts -----
+        function updateAlertsBtn() {
+            const b = $('alerts-btn');
+            if (b) b.style.display = ('Notification' in window && Notification.permission === 'default') ? '' : 'none';
+        }
+        async function askAlertPermission() {
+            unlockAudio();
+            try { if ('Notification' in window && Notification.permission === 'default') await Notification.requestPermission(); } catch (e) {}
+            updateAlertsBtn();
+        }
+        $('alerts-btn').onclick = askAlertPermission;
+        updateAlertsBtn();
+
+        function notifySystem(title, body) {
+            try {
+                if (!('Notification' in window) || Notification.permission !== 'granted') return;
+                const nOpts = { body, tag: 'dispatch-' + truckId, renotify: true, requireInteraction: true, icon: 'icon-192.png', badge: 'icon-192.png', vibrate: [400, 150, 400, 150, 800] };
+                const plain = () => { try { new Notification(title, nOpts); } catch (e) {} };
+                if (navigator.serviceWorker && navigator.serviceWorker.getRegistration) {
+                    navigator.serviceWorker.getRegistration().then(reg => { if (reg && reg.showNotification) reg.showNotification(title, nOpts).catch(plain); else plain(); }).catch(plain);
+                } else plain();
+            } catch (e) {}
+        }
+
+        const remaining = () => dispatch ? dispatch.stops.map((s, i) => ({ lat: s.lat, lng: s.lng, label: s.label, note: s.note, i })).filter(s => !doneSet.has(s.i)) : [];
+
+        function handleDispatch(d) {
+            const stops = d && Array.isArray(d.stops) ? d.stops.filter(s => s && typeof s.lat === 'number' && typeof s.lng === 'number').slice(0, 10) : [];
+            if (!d || !d.id || !stops.length) {
+                if (dispatch) { dispatch = null; doneSet = new Set(); closeAlert(); renderDispatch(); renderDispatchLayers(); updateRoute(false); }
+                return;
+            }
+            if (dispatch && dispatch.id === String(d.id)) return; // nothing new
+            dispatch = { id: String(d.id), stops: stops.map(s => ({ lat: s.lat, lng: s.lng, label: String(s.label || ''), note: String(s.note || '') })), note: String(d.note || ''), by: String(d.by || 'Dispatch'), sentAt: Number(d.sentAt) || Date.now() };
+            try { doneSet = new Set(JSON.parse(localStorage.getItem(doneKey(dispatch.id)) || '[]')); } catch (e) { doneSet = new Set(); }
+            renderDispatch(); renderDispatchLayers(); updateRoute(true);
+            let seen = '';
+            try { seen = localStorage.getItem(seenKey) || ''; } catch (e) {}
+            if (seen !== dispatch.id) alertDriver();
+        }
+
+        function alertDriver() {
+            closeAlert();
+            const d = dispatch;
+            if (!d) return;
+            alertEl = document.createElement('div');
+            alertEl.className = 'alert-overlay';
+            alertEl.innerHTML = '<div class="alert-box" role="alertdialog" aria-labelledby="alert-title">'
+                + '<h2 id="alert-title">🚨 New stops from dispatch</h2>'
+                + '<p style="margin:0 0 8px;">' + esc(d.by) + ' sent ' + d.stops.length + ' stop' + (d.stops.length === 1 ? '' : 's') + ' for ' + esc(truckName(truckId)) + '.</p>'
+                + (d.note ? '<p style="background:#fff7ed; border-radius:8px; padding:8px 10px; margin:0 0 8px;">💬 ' + esc(d.note) + '</p>' : '')
+                + '<ol style="margin:0 0 12px; padding-left:20px;">' + d.stops.map(s => '<li>' + esc(s.label || 'Stop') + (s.note ? ' <span class="muted">— ' + esc(s.note) + '</span>' : '') + '</li>').join('') + '</ol>'
+                + '<div class="btn-row"><button class="action-btn btn-green" type="button" data-act="ok">Got it — show route</button>'
+                + '<button class="action-btn btn-orange" type="button" data-act="nav">🧭 Navigate</button></div></div>';
+            document.body.appendChild(alertEl);
+            alertEl.querySelector('[data-act="ok"]').onclick = () => { ackDispatch(); closeAlert(); focusRoute(); };
+            alertEl.querySelector('[data-act="nav"]').onclick = () => { ackDispatch(); closeAlert(); openNavigation(false); };
+            ring();
+            let rings = 1;
+            beepTimer = setInterval(() => { if (rings >= 4) { clearInterval(beepTimer); beepTimer = null; return; } rings++; ring(); }, 15000);
+            try { if (navigator.vibrate) navigator.vibrate([400, 150, 400, 150, 800]); } catch (e) {}
+            titleBase = document.title;
+            let flip = false;
+            titleTimer = setInterval(() => { flip = !flip; document.title = flip ? '🚨 New stops!' : titleBase; }, 1000);
+            notifySystem('🚨 New stops from dispatch', d.stops.length + ' stop' + (d.stops.length === 1 ? '' : 's') + ': ' + d.stops.map(s => s.label).filter(Boolean).join(' → ').slice(0, 140));
+        }
+        function closeAlert() {
+            if (alertEl) { alertEl.remove(); alertEl = null; }
+            if (beepTimer) { clearInterval(beepTimer); beepTimer = null; }
+            if (titleTimer) { clearInterval(titleTimer); titleTimer = null; document.title = titleBase || document.title; }
+        }
+        // Tells dispatch you've seen the stops (and which ones are done).
+        function ackDispatch() {
+            if (!dispatch) return;
+            try { localStorage.setItem(seenKey, dispatch.id); } catch (e) {}
+            setDoc(doc(db, 'dispatch_acks', truckId), { dispatchId: dispatch.id, seenAt: Date.now(), done: [...doneSet].sort((a, b) => a - b), by: String(driverName || truckName(truckId)).slice(0, 40) }).catch(() => {});
+        }
+        function markDone(i) {
+            if (!dispatch) return;
+            if (doneSet.has(i)) doneSet.delete(i); else doneSet.add(i);
+            try { localStorage.setItem(doneKey(dispatch.id), JSON.stringify([...doneSet])); } catch (e) {}
+            ackDispatch();
+            renderDispatch(); renderDispatchLayers(); updateRoute(false);
+        }
+
+        function renderDispatch() {
+            const card = $('dispatch-card');
+            if (!card) return;
+            lastCardRender = Date.now();
+            if (!dispatch) { card.style.display = 'none'; card.innerHTML = ''; return; }
+            const left = remaining();
+            card.style.display = '';
+            card.innerHTML = '<h3>📍 Stops from ' + esc(dispatch.by) + '</h3>'
+                + '<div class="muted" style="margin-bottom:6px;">Sent ' + esc(fmtTime(dispatch.sentAt)) + (routeInfo ? ' · ' + esc(routeInfo) : '') + '</div>'
+                + (dispatch.note ? '<div style="margin:0 0 6px;">💬 ' + esc(dispatch.note) + '</div>' : '');
+            dispatch.stops.forEach((s, i) => {
+                const isDone = doneSet.has(i);
+                const dist = me && !isDone ? fmtMiles(distMeters(me.lat, me.lng, s.lat, s.lng)) + ' away' : '';
+                const row = document.createElement('div');
+                row.className = 'stop-row' + (isDone ? ' done' : '');
+                row.innerHTML = '<span class="stop-num' + (isDone ? ' done' : '') + '">' + (isDone ? '✓' : (i + 1)) + '</span>'
+                    + '<div class="stop-main"><div><strong>' + esc(s.label || ('Stop ' + (i + 1))) + '</strong></div>'
+                    + (s.note ? '<small>' + esc(s.note) + '</small>' : '') + (dist ? '<small>' + esc(dist) + '</small>' : '') + '</div>';
+                const b = document.createElement('button');
+                b.className = 'mini-btn'; b.type = 'button'; b.textContent = isDone ? 'Undo' : 'Done ✓';
+                b.onclick = () => markDone(i);
+                row.appendChild(b);
+                card.appendChild(row);
+            });
+            const btns = document.createElement('div');
+            btns.className = 'btn-row';
+            if (left.length) {
+                const nav = document.createElement('button');
+                nav.className = 'action-btn btn-orange'; nav.type = 'button';
+                nav.textContent = left.length > 1 ? '🧭 Navigate all ' + left.length + ' stops' : '🧭 Navigate';
+                nav.onclick = () => { ackDispatch(); openNavigation(false); };
+                btns.appendChild(nav);
+                if (left.length > 1) {
+                    const nx = document.createElement('button');
+                    nx.className = 'action-btn'; nx.type = 'button'; nx.textContent = 'Next stop only';
+                    nx.onclick = () => { ackDispatch(); openNavigation(true); };
+                    btns.appendChild(nx);
+                }
+            } else {
+                const ok = document.createElement('div');
+                ok.style.cssText = 'font-weight:700; color:#16a34a;';
+                ok.textContent = '✅ All stops done!';
+                btns.appendChild(ok);
+            }
+            card.appendChild(btns);
+            const tools = document.createElement('div');
+            tools.className = 'map-tools'; tools.style.margin = '10px 0 0';
+            const show = document.createElement('button');
+            show.className = 'link-btn'; show.type = 'button'; show.textContent = 'Show route on map';
+            show.onclick = () => { ackDispatch(); focusRoute(); };
+            const rr = document.createElement('button');
+            rr.className = 'link-btn'; rr.type = 'button'; rr.textContent = '↻ Re-route from here';
+            rr.onclick = () => { ackDispatch(); updateRoute(true); };
+            tools.append(show, rr);
+            card.appendChild(tools);
+        }
+
+        function renderDispatchLayers() {
+            if (!map) return;
+            if (stopLayer) { map.removeLayer(stopLayer); stopLayer = null; }
+            if (!dispatch) return;
+            stopLayer = L.layerGroup().addTo(map);
+            dispatch.stops.forEach((s, i) => {
+                const isDone = doneSet.has(i);
+                L.marker([s.lat, s.lng], { icon: L.divIcon({ className: 'stop-icon', html: '<div class="stop-pin' + (isDone ? ' done' : '') + '">' + (isDone ? '✓' : (i + 1)) + '</div>', iconSize: [28, 28], iconAnchor: [14, 14] }) })
+                    .bindPopup('<b>Stop ' + (i + 1) + '</b><br>' + esc(s.label || '') + (s.note ? '<br><small>' + esc(s.note) + '</small>' : ''))
+                    .addTo(stopLayer);
+            });
+        }
+
+        // Draws the road route from you through the stops that aren't done yet.
+        async function updateRoute(fit) {
+            if (!map) { routePending = true; return; }
+            routePending = false;
+            const req = ++routeReq;
+            if (routeLayer) { map.removeLayer(routeLayer); routeLayer = null; }
+            routeInfo = '';
+            const left = remaining();
+            if (!dispatch || !left.length) { routeNeedsOrigin = false; if (dispatch) renderDispatch(); return; }
+            const pts = (me ? [[me.lat, me.lng]] : []).concat(left.map(s => [s.lat, s.lng]));
+            routeNeedsOrigin = !me;
+            if (fit) fitDispatch();
+            if (pts.length < 2) { renderDispatch(); return; }
+            const r = await fetchRoute(pts);
+            if (req !== routeReq || !alive || !map) return;
+            routeLayer = r
+                ? L.polyline(r.coords, { color: '#ea580c', weight: 6, opacity: 0.85 }).addTo(map)
+                : L.polyline(pts, { color: '#ea580c', weight: 4, opacity: 0.85, dashArray: '8 10' }).addTo(map);
+            routeInfo = r ? fmtMiles(r.distance) + ' · about ' + fmtDur(r.duration * 1000) + ' of driving' : 'straight-line preview (tap Navigate for directions)';
+            renderDispatch();
+        }
+        function fitDispatch() {
+            if (!map || !dispatch) return;
+            const pts = remaining().map(s => [s.lat, s.lng]);
+            if (me) pts.push([me.lat, me.lng]);
+            if (!pts.length) return;
+            follow = false;
+            if (pts.length === 1) map.setView(pts[0], 15); else map.fitBounds(pts, { padding: [40, 40], maxZoom: 16 });
+        }
+        function focusRoute() {
+            fitDispatch();
+            const m = $('driver-map');
+            if (m) m.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        // Opens Google Maps (app on Android/iPhone) with turn-by-turn directions through the stops.
+        function openNavigation(onlyNext) {
+            const left = remaining();
+            if (!left.length) return;
+            const list = onlyNext ? [left[0]] : left.slice(0, 10);
+            const dest = list[list.length - 1];
+            let url = 'https://www.google.com/maps/dir/?api=1&travelmode=driving&destination=' + encodeURIComponent(dest.lat + ',' + dest.lng);
+            const way = list.slice(0, -1).map(s => s.lat + ',' + s.lng).join('|');
+            if (way) url += '&waypoints=' + encodeURIComponent(way);
+            if (me) url += '&origin=' + encodeURIComponent(me.lat + ',' + me.lng);
+            window.open(url, '_blank', 'noopener');
+        }
+
         const unsubConfig = onSnapshot(doc(db, 'config', 'metrics'), async (snap) => {
             config = { ...DEFAULT_CONFIG, ...(snap.exists() ? snap.data() : {}) };
             applyConfig();
+            handleDispatch((config.dispatch || {})[truckId] || null);
             // Dispatch pressed "Stop" for this truck since this shift started -> stop sharing.
             if (tracking && stopTokenOf(config) !== shiftToken) {
                 stoppedByDispatch = true;
@@ -1321,7 +1819,7 @@
                 saveRecent(recent); recent = recent.slice(0, 5);
                 $('sale-amount').value = ''; $('sale-items').value = '';
                 renderSales();
-            } catch (e) { alert('Could not save that sale. Check your connection.'); }
+            } catch (e) { alert(e && e.code === 'permission-denied' ? 'The database rules don\'t let this login save sales for ' + truckName(truckId) + ' yet.' : 'Could not save that sale. Check your connection.'); }
         };
 
         // ----- stop detection -----
@@ -1371,6 +1869,7 @@
             statusEl.textContent = 'Status: Offline';
             stopLine.textContent = '';
             try { await deleteDoc(doc(db, 'active_fleet', truckId)); } catch (e) {}
+            if (alive) startViewWatch();
         }
 
         // ----- location permission help -----
@@ -1423,6 +1922,7 @@
 
         btn.onclick = async () => {
             if (tracking) { stopTracking(); return; }
+            askAlertPermission(); // asked here because the phone only allows it right after a tap
             if (!('geolocation' in navigator)) { alert('Geolocation is not supported by your browser.'); return; }
             if (!window.isSecureContext) { showHelp('insecure'); return; }
             // If location is already blocked for this site, explain how to fix it instead of failing.
@@ -1447,6 +1947,7 @@
             btn.style.background = '#dc2626';
             statusEl.textContent = 'Connecting to GPS... (tap Allow if your phone asks)';
             lockScreen();
+            stopViewWatch();
             startWatch(true);
         };
 
@@ -1487,6 +1988,7 @@
                 if (acc > (preciseMode ? 150 : 2000)) { statusEl.textContent = `Getting a better GPS lock... (+/- ${acc}m)`; return; }
                 if (!preciseMode && acc <= 100) startWatch(true); // GPS is back: return to precise mode
 
+                showMe(lat, lng, acc);
                 trackStop(lat, lng, now, acc);
                 const since = stopSinceNow(now);
                 statusEl.textContent = `Sharing location (+/- ${acc}m)`;
@@ -1504,7 +2006,11 @@
                             stopSince: since,
                             lastUpdated: serverTimestamp()
                         });
-                    } catch (e) { statusEl.textContent = 'Could not send location. Check your connection.'; }
+                    } catch (e) {
+                        statusEl.textContent = (e && e.code === 'permission-denied')
+                            ? (asAdmin ? 'The database rules don\'t let admin logins share a truck\'s location yet (see the rules note).' : 'The database refused your location. Ask the admin to check the Firestore rules.')
+                            : 'Could not send location. Check your connection.';
+                    }
                 }
         }
 
@@ -1519,6 +2025,10 @@
         $('driver-logout').onclick = async () => { await stopTracking(); await signOut(auth); };
 
         cleanup = () => {
+            alive = false;
+            closeAlert(); stopViewWatch();
+            document.removeEventListener('pointerdown', unlockAudio);
+            if (map) { safeRemoveMap(map); map = null; }
             stopTracking();
             unsubConfig(); summaryUnsub();
             document.removeEventListener('visibilitychange', onVis);
@@ -1549,6 +2059,9 @@
         $('link-customer').textContent = baseUrl;
         $('link-staff').textContent = baseUrl + '#staff';
         $('admin-logout').onclick = () => signOut(auth);
+        const ps = $('panel-switch');
+        ps.style.display = ''; ps.value = 'admin';
+        ps.onchange = () => switchPanel(user, opts, ps.value);
         const errEl = $('admin-err');
 
         try { await loadLeaflet(); } catch (e) { errEl.textContent = 'Could not load the map library.'; return; }
@@ -1712,6 +2225,10 @@
                     sb.onclick = (ev) => { ev.stopPropagation(); stopTruck(id); };
                     actions.appendChild(sb);
                 }
+                const sendB = document.createElement('button');
+                sendB.className = 'link-btn'; sendB.textContent = '📍 Send stops';
+                sendB.onclick = (ev) => { ev.stopPropagation(); startDispatchFor(id); };
+                actions.appendChild(sendB);
                 const db_ = document.createElement('button');
                 db_.className = 'link-btn stop-link'; db_.textContent = 'Delete truck';
                 db_.onclick = (ev) => { ev.stopPropagation(); deleteTruck(id); };
@@ -1773,7 +2290,7 @@
             $('cfg-items').disabled = !config.sales;
         }
 
-        function renderAll() { renderStats(); renderChips(); renderMarkers(); renderStopSelect(); renderTrucks(); renderStops(); renderManage(); renderSettings(); }
+        function renderAll() { renderStats(); renderChips(); renderMarkers(); renderStopSelect(); renderTrucks(); renderStops(); renderManage(); renderSettings(); renderDispatchAdmin(); }
 
         // ----- settings controls -----
         async function saveConfig(patch) {
@@ -2095,6 +2612,223 @@
             setTimeout(() => URL.revokeObjectURL(a.href), 2000);
         };
 
+        // ----- Dispatch: send a truck to one or more stops -----
+        // The stops are saved in the shared settings document every driver's phone already listens to,
+        // so sending them costs almost nothing and reaches the driver within a second or two.
+        let draft = [], tapMode = false, acks = {}, acksOk = false, lastTruckOpts = '';
+        const dispLayers = {};
+        const draftLayer = L.layerGroup().addTo(map);
+        const DISPATCH_MAX = 9;
+        const dErr = (msg) => { const e = $('dispatch-err'); e.style.color = '#dc2626'; e.textContent = msg || ''; };
+        const dOk = (msg) => { const e = $('dispatch-err'); e.style.color = '#16a34a'; e.textContent = msg; };
+        const stopIcon = (label, cls) => L.divIcon({ className: 'stop-icon', html: '<div class="stop-pin ' + (cls || '') + '">' + label + '</div>', iconSize: [28, 28], iconAnchor: [14, 14] });
+        const validDispatch = (d) => !!(d && d.id && Array.isArray(d.stops) && d.stops.length);
+
+        function renderDispatchTruckSelect() {
+            const sel = $('dispatch-truck');
+            const ids = Object.keys(trucks).sort(byTruckNum);
+            const html = '<option value="">' + (ids.length ? '— Choose a truck —' : 'No trucks yet') + '</option>'
+                + ids.map(id => '<option value="' + esc(id) + '">' + esc(truckName(id) + (nameOf(id) ? ' — ' + nameOf(id) : '') + ' · ' + statusOf(id).label) + '</option>').join('');
+            if (html === lastTruckOpts) return;
+            const prev = sel.value;
+            sel.innerHTML = html; lastTruckOpts = html;
+            if (ids.includes(prev)) sel.value = prev;
+        }
+        function renderDraft() {
+            draftLayer.clearLayers();
+            const el = $('dispatch-stops');
+            el.innerHTML = draft.length ? '' : '<p class="muted" style="margin:4px 0 10px;">No stops yet. Search for an address, or tap "Tap the map" and touch the spot.</p>';
+            draft.forEach((s, i) => {
+                L.marker([s.lat, s.lng], { icon: stopIcon(i + 1, 'draft'), draggable: true })
+                    .on('dragend', (ev) => { const p = ev.target.getLatLng(); s.lat = p.lat; s.lng = p.lng; })
+                    .addTo(draftLayer);
+                const row = document.createElement('div');
+                row.className = 'draft-row';
+                row.innerHTML = '<span class="stop-num" style="background:#7c3aed;">' + (i + 1) + '</span><div class="stop-main"><div>' + esc(s.label) + '</div></div>';
+                const note = document.createElement('input');
+                note.type = 'text'; note.maxLength = 80; note.autocomplete = 'off'; note.placeholder = 'Note for this stop (optional)'; note.value = s.note || '';
+                note.style.cssText = 'margin:4px 0 0; padding:6px 8px; font-size:14px;';
+                note.oninput = () => { s.note = note.value; };
+                row.querySelector('.stop-main').appendChild(note);
+                const tools = document.createElement('div');
+                tools.style.cssText = 'display:flex; gap:4px;';
+                const mk = (txt, title, fn, disabled) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'mini-btn'; b.textContent = txt; b.title = title; b.disabled = !!disabled; b.onclick = fn; tools.appendChild(b); };
+                mk('↑', 'Move up', () => { draft.splice(i - 1, 0, draft.splice(i, 1)[0]); renderDraft(); }, i === 0);
+                mk('↓', 'Move down', () => { draft.splice(i + 1, 0, draft.splice(i, 1)[0]); renderDraft(); }, i === draft.length - 1);
+                mk('✕', 'Remove', () => { draft.splice(i, 1); renderDraft(); });
+                row.appendChild(tools);
+                el.appendChild(row);
+            });
+            $('dispatch-send').disabled = !draft.length;
+        }
+        function addDraft(lat, lng, label) {
+            if (draft.length >= DISPATCH_MAX) { dErr('You can plan up to ' + DISPATCH_MAX + ' stops at a time.'); return -1; }
+            draft.push({ lat, lng, label: String(label || 'Dropped pin').slice(0, 80), note: '' });
+            dErr('');
+            renderDraft();
+            if (draft.length === 1) map.setView([lat, lng], Math.max(map.getZoom(), 14));
+            return draft.length - 1;
+        }
+        function updateTap() {
+            $('dispatch-tap').textContent = tapMode ? '✋ Tap the map to drop stops — tap here when finished' : '🗺️ Tap the map to drop a stop';
+            document.body.classList.toggle('map-tap-on', tapMode);
+        }
+        $('dispatch-tap').onclick = () => {
+            tapMode = !tapMode; updateTap();
+            if (tapMode) $('admin-map').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        };
+        map.on('click', async (e) => {
+            if (!tapMode) return;
+            const lat = e.latlng.lat, lng = e.latlng.lng;
+            const idx = addDraft(lat, lng, 'Dropped pin (' + lat.toFixed(4) + ', ' + lng.toFixed(4) + ')');
+            if (idx < 0) return;
+            const s = draft[idx];
+            const name = await reverseGeocode(lat, lng);
+            if (name && draft.includes(s)) { s.label = name; renderDraft(); }
+        });
+        $('dispatch-find').onclick = async () => {
+            const q = $('dispatch-addr').value.trim();
+            const box = $('dispatch-results');
+            if (!q) { dErr('Type an address or place first.'); return; }
+            dErr('');
+            $('dispatch-find').disabled = true;
+            box.style.display = '';
+            box.innerHTML = '<p class="muted" style="padding:8px 10px; margin:0;">Searching…</p>';
+            try {
+                const found = await geocode(q, map.getZoom() >= 8 ? map.getBounds() : null);
+                if (!found.length) { box.innerHTML = '<p class="muted" style="padding:8px 10px; margin:0;">No match. Try adding the city and state.</p>'; return; }
+                box.innerHTML = '';
+                found.forEach(r => {
+                    const b = document.createElement('button');
+                    b.type = 'button'; b.textContent = '📍 ' + r.label;
+                    b.onclick = () => { box.style.display = 'none'; box.innerHTML = ''; $('dispatch-addr').value = ''; addDraft(r.lat, r.lng, r.label); };
+                    box.appendChild(b);
+                });
+            } catch (e) {
+                box.innerHTML = '<p class="err" style="padding:8px 10px; margin:0;">Address search isn\'t answering right now. Try again, or tap the map instead.</p>';
+            } finally { $('dispatch-find').disabled = false; }
+        };
+        $('dispatch-addr').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('dispatch-find').click(); });
+
+        $('dispatch-send').onclick = async () => {
+            const id = $('dispatch-truck').value;
+            if (!id) { dErr('Choose which truck to send.'); return; }
+            if (!draft.length) { dErr('Add at least one stop.'); return; }
+            if (validDispatch((config.dispatch || {})[id]) && !confirm(truckName(id) + ' already has stops from dispatch. Replace them with this new list?')) return;
+            $('dispatch-send').disabled = true;
+            try {
+                const by = await adminDisplayName(opts);
+                const payload = {
+                    id: 'd' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+                    stops: draft.map(s => ({ lat: Math.round(s.lat * 1e6) / 1e6, lng: Math.round(s.lng * 1e6) / 1e6, label: String(s.label || '').slice(0, 80), note: String(s.note || '').trim().slice(0, 80) })),
+                    note: $('dispatch-note').value.trim().slice(0, 120),
+                    by: String(by).slice(0, 40),
+                    sentAt: Date.now()
+                };
+                await setDoc(doc(db, 'config', 'metrics'), { dispatch: { [id]: payload } }, { merge: true });
+                draft = []; $('dispatch-note').value = ''; tapMode = false; updateTap(); renderDraft();
+                dOk('Sent to ' + truckName(id) + '. Their phone rings and shows the route.' + (fleet[id] ? '' : ' They\'re not online right now, so they\'ll see it as soon as they open the app.'));
+            } catch (e) {
+                dErr(e && e.code === 'permission-denied' ? 'The database rules blocked this. Make sure you\'re signed in as an admin.' : 'Could not send. Check your connection and try again.');
+            } finally { $('dispatch-send').disabled = !draft.length; }
+        };
+        async function cancelDispatch(id) {
+            if (!confirm('Cancel the stops sent to ' + truckName(id) + '? They disappear from the driver\'s phone.')) return;
+            try { await setDoc(doc(db, 'config', 'metrics'), { dispatch: { [id]: deleteField() } }, { merge: true }); }
+            catch (e) { dErr('Could not cancel. Check your connection.'); }
+        }
+        function showDispatchOnMap(id) {
+            const d = (config.dispatch || {})[id];
+            if (!validDispatch(d)) return;
+            const pts = d.stops.map(s => [s.lat, s.lng]);
+            const f = fleet[id];
+            if (f && typeof f.lat === 'number' && typeof f.lng === 'number') pts.push([f.lat, f.lng]);
+            if (pts.length === 1) map.setView(pts[0], 15); else map.fitBounds(pts, { padding: [50, 50], maxZoom: 16 });
+            $('admin-map').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        function startDispatchFor(id) {
+            const sec = $('dispatch-section');
+            sec.open = true;
+            renderDispatchTruckSelect();
+            $('dispatch-truck').value = id;
+            sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        function renderDispatchList() {
+            const all = config.dispatch || {};
+            const ids = Object.keys(all).filter(id => validDispatch(all[id])).sort(byTruckNum);
+            const el = $('dispatch-active');
+            el.innerHTML = ids.length ? '<h4 style="margin:14px 0 4px;">Sent stops</h4>' : '';
+            ids.forEach(id => {
+                const d = all[id];
+                const a = acks[id] && acks[id].dispatchId === d.id ? acks[id] : null;
+                const doneArr = a && Array.isArray(a.done) ? a.done : [];
+                let status = '';
+                if (a) status = doneArr.length >= d.stops.length ? '✅ All stops done'
+                    : '👀 Driver saw it' + (a.seenAt ? ' at ' + fmtTime(a.seenAt) : '') + (doneArr.length ? ' · ' + doneArr.length + ' of ' + d.stops.length + ' done' : '');
+                else if (acksOk) status = '⏳ Not seen yet';
+                const info = dispLayers[id] && dispLayers[id].info ? ' · ' + dispLayers[id].info : '';
+                const card = document.createElement('div');
+                card.className = 'disp-card';
+                card.innerHTML = '<div style="display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap;"><strong>🚚 ' + esc(truckName(id)) + (nameOf(id) ? ' — ' + esc(nameOf(id)) : '') + '</strong>'
+                    + '<span class="muted">' + d.stops.length + ' stop' + (d.stops.length === 1 ? '' : 's') + ' · sent ' + esc(fmtTime(d.sentAt)) + (d.by ? ' by ' + esc(d.by) : '') + esc(info) + '</span></div>'
+                    + (status ? '<div style="margin-top:4px; font-weight:600;">' + esc(status) + '</div>' : '')
+                    + '<ol style="margin:6px 0 0; padding-left:20px; font-size:14px;">'
+                    + d.stops.map((s, i) => '<li' + (doneArr.includes(i) ? ' style="text-decoration:line-through; color:#16a34a;"' : '') + '>' + esc(s.label) + (s.note ? ' <span class="muted">— ' + esc(s.note) + '</span>' : '') + '</li>').join('')
+                    + '</ol>' + (d.note ? '<div class="muted" style="margin-top:4px;">💬 ' + esc(d.note) + '</div>' : '');
+                const btns = document.createElement('div');
+                btns.style.cssText = 'display:flex; gap:16px; margin-top:6px;';
+                const sh = document.createElement('button');
+                sh.className = 'link-btn'; sh.type = 'button'; sh.textContent = 'Show on map'; sh.onclick = () => showDispatchOnMap(id);
+                const cx = document.createElement('button');
+                cx.className = 'link-btn stop-link'; cx.type = 'button'; cx.textContent = 'Cancel stops'; cx.onclick = () => cancelDispatch(id);
+                btns.append(sh, cx);
+                card.appendChild(btns);
+                el.appendChild(card);
+            });
+        }
+        function syncDispatchLayers() {
+            const all = config.dispatch || {};
+            Object.keys(dispLayers).forEach(id => {
+                if (!validDispatch(all[id]) || all[id].id !== dispLayers[id].did) { map.removeLayer(dispLayers[id].group); delete dispLayers[id]; }
+            });
+            Object.keys(all).filter(id => validDispatch(all[id])).forEach(id => {
+                if (!dispLayers[id]) drawDispatch(id, all[id]); else drawDispatchMarkers(id);
+            });
+        }
+        function drawDispatch(id, d) {
+            const entry = { did: d.id, group: L.layerGroup().addTo(map), markers: L.layerGroup(), doneKey: null, info: '' };
+            entry.markers.addTo(entry.group);
+            dispLayers[id] = entry;
+            drawDispatchMarkers(id);
+            const f = fleet[id];
+            const pts = (f && typeof f.lat === 'number' && typeof f.lng === 'number' ? [[f.lat, f.lng]] : []).concat(d.stops.map(s => [s.lat, s.lng]));
+            if (pts.length < 2) return;
+            fetchRoute(pts).then(r => {
+                if (dispLayers[id] !== entry) return;
+                L.polyline(r ? r.coords : pts, r ? { color: '#ea580c', weight: 5, opacity: 0.7 } : { color: '#ea580c', weight: 3, opacity: 0.8, dashArray: '8 10' }).addTo(entry.group);
+                entry.info = r ? fmtMiles(r.distance) + ' · ~' + fmtDur(r.duration * 1000) : '';
+                renderDispatchList();
+            });
+        }
+        function drawDispatchMarkers(id) {
+            const entry = dispLayers[id], d = (config.dispatch || {})[id];
+            if (!entry || !validDispatch(d)) return;
+            const a = acks[id] && acks[id].dispatchId === d.id ? acks[id] : null;
+            const doneArr = a && Array.isArray(a.done) ? a.done : [];
+            const key = doneArr.join(',');
+            if (entry.doneKey === key) return;
+            entry.doneKey = key;
+            entry.markers.clearLayers();
+            d.stops.forEach((s, i) => {
+                const isDone = doneArr.includes(i);
+                L.marker([s.lat, s.lng], { icon: stopIcon(isDone ? '✓' : i + 1, isDone ? 'done' : '') })
+                    .bindPopup('<b>' + esc(truckName(id)) + ' · stop ' + (i + 1) + '</b><br>' + esc(s.label) + (s.note ? '<br><small>' + esc(s.note) + '</small>' : ''))
+                    .addTo(entry.markers);
+            });
+        }
+        function renderDispatchAdmin() { renderDispatchTruckSelect(); syncDispatchLayers(); renderDispatchList(); }
+        renderDraft(); updateTap();
+
         // ----- live data -----
         // Listeners only run while this page is on screen. Every live update costs a "read", so a
         // forgotten tab in the background would otherwise burn through the free daily allowance.
@@ -2126,6 +2860,10 @@
             unsubs.push(onSnapshot(query(collection(db, 'stops'), orderBy('endedAt', 'desc'), limit(12)), (snap) => {
                 recentStops = snap.docs.map(d => d.data()); renderStops();
             }, denied));
+            unsubs.push(onSnapshot(collection(db, 'dispatch_acks'), (snap) => {
+                acksOk = true; acks = {}; snap.forEach(d => { acks[d.id] = d.data(); });
+                renderDispatchList(); Object.keys(dispLayers).forEach(drawDispatchMarkers);
+            }, () => { acksOk = false; }));
             unsubs.push(onSnapshot(doc(db, 'config', 'metrics'), (snap) => {
                 config = { ...DEFAULT_CONFIG, ...(snap.exists() ? snap.data() : {}) }; renderAll();
             }, denied));
@@ -2172,7 +2910,8 @@
         cleanup = () => {
             detach(); clearTimeout(hiddenTimer); clearInterval(timer);
             document.removeEventListener('visibilitychange', onVis);
-            map.remove();
+            document.body.classList.remove('map-tap-on');
+            safeRemoveMap(map);
         };
     }
 </script>
