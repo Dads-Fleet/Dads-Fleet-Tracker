@@ -729,9 +729,9 @@
             try { const t = +localStorage.getItem(laterKey) || 0; if (Date.now() - t < 0) return; /* 'Not now' only skips this visit; installing hides it for good */ } catch (e) {}
         }
         installOffered[audience] = true;
-        document.getElementById('install-title').textContent = audience === 'customer' ? 'Add Treat Stop to your home screen? 🍦' : 'Add Dispatch to your home screen?';
+        document.getElementById('install-title').textContent = audience === 'customer' ? 'Want Treat Stop on your home screen for next time? 🍦' : 'Add Dispatch to your home screen?';
         document.getElementById('install-sub').textContent = audience === 'customer'
-            ? 'Request the ice cream truck in one tap next time.'
+            ? 'Then you can request the ice cream truck in one tap.'
             : 'Opens like an app, full screen, always the newest version.';
         document.getElementById('install-icon').src = 'icon-192.png';
         const sheet = document.getElementById('install-sheet'), body = document.getElementById('install-body'), go = document.getElementById('install-go');
@@ -803,7 +803,7 @@
         } else {
             startCustomer();
             setManifest(false);
-            const seq = ++routeSeq; setTimeout(() => { if (seq === routeSeq) openInstall(false, 'customer'); }, INSTALL_DELAY_MS);
+            ++routeSeq; // customers are asked once, right after they send a request (see the Send Request button)
         }
     }
     window.addEventListener('hashchange', () => {
@@ -1151,6 +1151,9 @@
                 statusEl.style.color = '#2b8a3e';
                 statusEl.textContent = "Request sent! We'll see you soon 🍧";
                 truckDriveBy();
+                // The one time customers are asked: right after a request goes through, once the truck has driven by.
+                const askSeq = routeSeq;
+                setTimeout(() => { if (askSeq === routeSeq) openInstall(false, 'customer'); }, 4500);
                 document.getElementById('cust-party').value = '';
                 document.getElementById('cust-notes').value = '';
             } catch (err) {
