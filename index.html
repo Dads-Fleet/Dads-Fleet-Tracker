@@ -11,14 +11,15 @@
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="Treat Stop" id="apple-title">
+    <meta name="apple-mobile-web-app-title" content="Dad's Treats" id="apple-title">
     <script>
-        // Two home-screen apps from one page: customers get "Treat Stop" (opens the request page),
-        // staff get "Dispatch" (opens Staff Sign In).
+        // Two home-screen apps from one page: customers get "Dad's Frozen Lemonade & Ice Cream"
+        // (icon label "Dad's Treats", opens the request page); staff get "Dispatch" (opens Staff Sign In).
         (function () {
             var staff = location.hash === '#staff' || /[?&](role|view)=(driver|admin)/.test(location.search);
             document.getElementById('manifest-link').href = staff ? 'manifest-staff.json' : 'manifest.json';
-            document.getElementById('apple-title').content = staff ? 'Dispatch' : 'Treat Stop';
+            document.getElementById('apple-title').content = staff ? 'Dispatch' : "Dad's Treats";
+            document.title = staff ? 'Fleet & Dispatch' : "Dad's Frozen Lemonade & Ice Cream";
         })();
     </script>
     <script>
@@ -128,7 +129,8 @@
         }
         .c-wrap { max-width: 520px; margin: 0 auto; padding: 24px 16px 48px; position: relative; z-index: 1; overflow: hidden; }
         .c-hero { text-align: center; position: relative; padding-top: 8px; }
-        .c-hero h1 { margin: 6px 0 4px; font-size: 2rem; color: #d6336c; text-shadow: 2px 2px 0 #fff; letter-spacing: .5px; }
+        .c-hero h1 { margin: 6px 0 4px; font-size: clamp(1.4rem, 7vw, 2rem); line-height: 1.12; color: #d6336c; text-shadow: 2px 2px 0 #fff; letter-spacing: .3px; }
+        .c-hero h1 .nw { white-space: nowrap; }
         .c-hero p { margin: 0 auto 8px; color: #5b6b86; max-width: 360px; }
         .c-art { display: flex; justify-content: center; align-items: flex-end; gap: 18px; height: 150px; }
         .c-art svg { height: 140px; width: auto; filter: drop-shadow(0 6px 6px rgba(0,0,0,.12)); }
@@ -265,7 +267,7 @@
                 <path d="M33,76 L38,148" stroke="#fff" stroke-width="5" opacity=".45" stroke-linecap="round"/>
                 </svg>
             </div>
-            <h1>Treat Stop!</h1>
+            <h1><span class="nw">Dad's Frozen Lemonade</span> <span class="nw">&amp; Ice Cream</span></h1>
             <p>Tell us when you'd like us to roll up. Ice cream and slushies on the way 🍦🧊</p>
         </div>
 
@@ -729,9 +731,9 @@
             try { const t = +localStorage.getItem(laterKey) || 0; if (Date.now() - t < 0) return; /* 'Not now' only skips this visit; installing hides it for good */ } catch (e) {}
         }
         installOffered[audience] = true;
-        document.getElementById('install-title').textContent = audience === 'customer' ? 'Want Treat Stop on your home screen for next time? 🍦' : 'Add Dispatch to your home screen?';
+        document.getElementById('install-title').textContent = audience === 'customer' ? "Add Dad's Frozen Lemonade & Ice Cream to your home screen? 🍦" : 'Add Dispatch to your home screen?';
         document.getElementById('install-sub').textContent = audience === 'customer'
-            ? 'Then you can request the ice cream truck in one tap.'
+            ? 'Next time you can request the truck in one tap.'
             : 'Opens like an app, full screen, always the newest version.';
         document.getElementById('install-icon').src = 'icon-192.png';
         const sheet = document.getElementById('install-sheet'), body = document.getElementById('install-body'), go = document.getElementById('install-go');
@@ -787,7 +789,8 @@
     function setManifest(staff) {
         const l = document.getElementById('manifest-link'), t = document.getElementById('apple-title');
         if (l) l.href = staff ? 'manifest-staff.json' : 'manifest.json';
-        if (t) t.content = staff ? 'Dispatch' : 'Treat Stop';
+        if (t) t.content = staff ? 'Dispatch' : "Dad's Treats";
+        document.title = staff ? 'Fleet & Dispatch' : "Dad's Frozen Lemonade & Ice Cream";
     }
 
     function route() {
