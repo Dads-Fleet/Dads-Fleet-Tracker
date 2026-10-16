@@ -1,7 +1,7 @@
 {
-  "name": "Treat Stop",
-  "short_name": "Treat Stop",
-  "description": "Request an ice cream & slushie truck stop.",
+  "name": "Dad's Frozen Lemonade & Ice Cream",
+  "short_name": "Dad's Treats",
+  "description": "Request the frozen lemonade & ice cream truck.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
