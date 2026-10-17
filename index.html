@@ -11,14 +11,14 @@
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="Dad's Treats" id="apple-title">
+    <meta name="apple-mobile-web-app-title" content="Dad's Frozen" id="apple-title">
     <script>
         // Two home-screen apps from one page: customers get "Dad's Frozen Lemonade & Ice Cream"
-        // (icon label "Dad's Treats", opens the request page); staff get "Dispatch" (opens Staff Sign In).
+        // (icon label "Dad's Frozen", opens the request page); staff get "Dispatch" (opens Staff Sign In).
         (function () {
             var staff = location.hash === '#staff' || /[?&](role|view)=(driver|admin)/.test(location.search);
             document.getElementById('manifest-link').href = staff ? 'manifest-staff.json' : 'manifest.json';
-            document.getElementById('apple-title').content = staff ? 'Dispatch' : "Dad's Treats";
+            document.getElementById('apple-title').content = staff ? 'Dispatch' : "Dad's Frozen";
             document.title = staff ? 'Fleet & Dispatch' : "Dad's Frozen Lemonade & Ice Cream";
         })();
     </script>
@@ -789,7 +789,7 @@
     function setManifest(staff) {
         const l = document.getElementById('manifest-link'), t = document.getElementById('apple-title');
         if (l) l.href = staff ? 'manifest-staff.json' : 'manifest.json';
-        if (t) t.content = staff ? 'Dispatch' : "Dad's Treats";
+        if (t) t.content = staff ? 'Dispatch' : "Dad's Frozen";
         document.title = staff ? 'Fleet & Dispatch' : "Dad's Frozen Lemonade & Ice Cream";
     }
 
