@@ -395,6 +395,7 @@
                 </div>
                 <button class="action-btn" id="sale-btn" style="margin-top:12px;">Add Sale</button>
                 <p id="sales-total" style="font-weight:600; margin:0 0 8px;"></p>
+                <p id="sales-sync" class="muted" style="display:none; margin:0 0 8px; font-size:14px;"></p>
                 <div id="sales-list"></div>
             </div>
 
@@ -532,7 +533,8 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-    import { initializeFirestore, collection, addDoc, setDoc, deleteDoc, doc, onSnapshot, getDoc, getDocs, increment, serverTimestamp, query, orderBy, limit, where, deleteField }
+    import { initializeFirestore, collection, addDoc, setDoc, deleteDoc, doc, onSnapshot, getDoc, getDocs, increment, serverTimestamp, query, orderBy, limit, where, deleteField,
+             writeBatch, waitForPendingWrites, persistentLocalCache, persistentMultipleTabManager }
         from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
     import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, updatePassword, deleteUser, EmailAuthProvider, reauthenticateWithCredential }
         from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
@@ -549,7 +551,13 @@
     const app = initializeApp(firebaseConfig);
     // Long polling: plain web requests instead of a streaming connection. Some phones, in-app browsers,
     // data-saver modes and ad/DNS blockers silently stall the streaming connection; this works everywhere.
-    const db = initializeFirestore(app, { experimentalForceLongPolling: true });
+    // Offline cache: changes made with no signal (sales, stop check-offs) are kept on the phone, even if the
+    // app is closed, and sent once there's signal again. If the browser can't store them, Firestore quietly
+    // falls back to keeping them in memory, which is how the app worked before.
+    const db = initializeFirestore(app, {
+        experimentalForceLongPolling: true,
+        localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
+    });
     const auth = getAuth(app);
 
     // Staff type a truck number + PIN. Behind the scenes that becomes an account like truck2@dispatch.local.
@@ -569,7 +577,10 @@
     const $app = document.getElementById('app');
     const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     const dayStr = (ms = Date.now()) => new Date(ms).toLocaleDateString('en-CA'); // YYYY-MM-DD, local time
-    const money = (n) => '$' + Number(n || 0).toFixed(2);
+    const money = (n) => '$' + num(n).toFixed(2);
+    // Totals come from the database and are shown on screen as HTML: force them to plain numbers first,
+    // so a bad value written by any login can never turn into page code.
+    function num(v) { const n = Number(v); return isFinite(n) ? n : 0; }
     // "truck2" -> "Truck 2". Anything else (e.g. "Driver 1" left over from the original app) is shown as-is.
     const truckName = (id) => /^truck\d+$/.test(String(id)) ? 'Truck ' + String(id).slice(5) : String(id) + ' (old app)';
     const byTruckNum = (a, b) => {
@@ -1782,33 +1793,66 @@
         let recent = loadRecent();
 
         function renderSales() {
-            const total = summary.sales || 0, items = summary.items || 0;
+            const total = num(summary.sales), items = num(summary.items);
             $('sales-total').textContent = `Today: ${money(total)}` + (config.items ? ` · ${items} item${items === 1 ? '' : 's'}` : '');
             const listEl = $('sales-list');
             listEl.innerHTML = '';
             recent.forEach(s => {
                 const row = document.createElement('div');
                 row.className = 'card';
-                row.innerHTML = `<div>${money(s.amount)}${config.items ? ' · ' + (s.items || 0) + ' item(s)' : ''}<br><small class="muted">${fmtTime(s.t)}</small></div>`;
+                row.innerHTML = `<div>${money(s.amount)}${config.items ? ' · ' + num(s.items) + ' item(s)' : ''}<br><small class="muted">${fmtTime(s.t)}${s.pending ? ' · ⏳ waiting for signal' : ''}</small></div>`;
                 const rm = document.createElement('button');
                 rm.className = 'link-btn'; rm.textContent = 'Remove';
-                rm.onclick = async () => {
+                rm.onclick = () => {
                     if (!confirm('Remove this sale?')) return;
-                    try {
-                        await deleteDoc(doc(db, 'sales', s.id));
-                        await bumpDaily(s.day || dayStr(), { sales: -s.amount, items: -(s.items || 0), saleCount: -1 });
-                        recent = recent.filter(x => x.id !== s.id); saveRecent(recent); renderSales();
-                    } catch (e) { alert('Could not remove that sale. Check your connection.'); }
+                    // Take it off the screen now; the database catches up when there's signal.
+                    const before = recent;
+                    recent = recent.filter(x => x.id !== s.id); saveRecent(recent); renderSales();
+                    const b = writeBatch(db);
+                    b.delete(doc(db, 'sales', s.id));
+                    b.set(doc(db, 'daily', (s.day || dayStr()) + '_' + truckId), dailyDelta(s.day || dayStr(), { sales: -s.amount, items: -(s.items || 0), saleCount: -1 }), { merge: true });
+                    syncing(b.commit(), () => { recent = before; saveRecent(recent); renderSales(); alert('Could not remove that sale.'); });
                 };
                 row.appendChild(rm);
                 listEl.appendChild(row);
             });
         }
 
-        function bumpDaily(day, delta) {
+        function dailyDelta(day, delta) {
             const data = { truckId, day };
             Object.keys(delta).forEach(k => { data[k] = increment(delta[k]); });
-            return setDoc(doc(db, 'daily', day + '_' + truckId), data, { merge: true });
+            return data;
+        }
+        function bumpDaily(day, delta) {
+            return setDoc(doc(db, 'daily', day + '_' + truckId), dailyDelta(day, delta), { merge: true });
+        }
+
+        // Saving with no signal: the change shows at once and is kept on the phone until it can be sent.
+        // Tracks how many saves are still waiting, and tells the driver when it's more than a moment.
+        let waiting = 0;
+        function showSync() {
+            const el = $('sales-sync');
+            if (!el) return;
+            const any = waiting > 0 || recent.some(x => x.pending);
+            el.style.display = any ? '' : 'none';
+            el.textContent = any ? '⏳ No signal right now. Sales are saved on this phone and will send automatically when you have signal. Keep the app open if you can.' : '';
+        }
+        function syncing(promise, onFail, onDone) {
+            waiting++;
+            let shown = false;
+            const t = setTimeout(() => { shown = true; showSync(); }, 2000);
+            promise.then(() => { if (onDone) onDone(); }, (e) => { if (onFail) onFail(e); })
+                .finally(() => { clearTimeout(t); waiting--; if (shown || waiting === 0) showSync(); });
+        }
+        function markSent(id) {
+            recent = loadRecent().map(x => x.id === id ? { ...x, pending: false } : x);
+            saveRecent(recent); renderSales(); showSync();
+        }
+        // Sales still marked "waiting" from before the app was closed: Firestore resends them on its own;
+        // once everything is through, clear the marks.
+        if (recent.some(x => x.pending)) {
+            showSync();
+            waitForPendingWrites(db).then(() => { recent = loadRecent().map(x => ({ ...x, pending: false })); saveRecent(recent); renderSales(); showSync(); }).catch(() => {});
         }
 
         $('sale-btn').onclick = async () => {
@@ -1817,15 +1861,21 @@
             const items = config.items ? Math.max(0, parseInt($('sale-items').value || '0', 10) || 0) : 0;
             const day = dayStr();
             watchSummary();
-            try {
-                const ref = await addDoc(collection(db, 'sales'), { truckId, amount, items, day, createdAt: serverTimestamp() });
-                await bumpDaily(day, { sales: amount, items, saleCount: 1 });
-                recent = loadRecent();
-                recent.unshift({ id: ref.id, amount, items, day, t: Date.now() });
-                saveRecent(recent); recent = recent.slice(0, 5);
-                $('sale-amount').value = ''; $('sale-items').value = '';
-                renderSales();
-            } catch (e) { alert(e && e.code === 'permission-denied' ? 'The database rules don\'t let this login save sales for ' + truckName(truckId) + ' yet.' : 'Could not save that sale. Check your connection.'); }
+            // The sale and its running total go in one batch: both are saved, or neither is.
+            const ref = doc(collection(db, 'sales'));
+            const b = writeBatch(db);
+            b.set(ref, { truckId, amount, items, day, createdAt: serverTimestamp() });
+            b.set(doc(db, 'daily', day + '_' + truckId), dailyDelta(day, { sales: amount, items, saleCount: 1 }), { merge: true });
+            // Show it right away, so nobody taps twice while a weak signal is slow to confirm.
+            recent = loadRecent();
+            recent.unshift({ id: ref.id, amount, items, day, t: Date.now(), pending: true });
+            saveRecent(recent); recent = recent.slice(0, 5);
+            $('sale-amount').value = ''; $('sale-items').value = '';
+            renderSales();
+            syncing(b.commit(), (e) => {
+                recent = loadRecent().filter(x => x.id !== ref.id); saveRecent(recent); renderSales();
+                alert(e && e.code === 'permission-denied' ? 'The database rules don\'t let this login save sales for ' + truckName(truckId) + ' yet.' : 'Could not save that sale. Please enter it again.');
+            }, () => markSent(ref.id));
         };
 
         // ----- stop detection -----
@@ -2079,7 +2129,7 @@
 
         let trucks = {}, pins = {}, fleet = {}, daily = {}, recentStops = [], config = { ...DEFAULT_CONFIG };
         const nameOf = (id) => (trucks[id] && trucks[id].driverName) || (fleet[id] && fleet[id].driverName) || '';
-        const sumOf = (key) => Object.values(daily).reduce((a, d) => a + (d[key] || 0), 0);
+        const sumOf = (key) => Object.values(daily).reduce((a, d) => a + num(d[key]), 0);
         const markers = {};
         let fitted = false;
 
@@ -2203,8 +2253,8 @@
                     listEl.appendChild(h);
                 }
                 const dd = daily[id] || {};
-                const amt = dd.sales || 0, its = dd.items || 0;
-                const nStops = dd.stopCount || 0, stopMs = (dd.stopSec || 0) * 1000;
+                const amt = num(dd.sales), its = num(dd.items);
+                const nStops = num(dd.stopCount), stopMs = num(dd.stopSec) * 1000;
 
                 let metrics = '';
                 if (st.cls !== 'off' && f && config.stops) {
