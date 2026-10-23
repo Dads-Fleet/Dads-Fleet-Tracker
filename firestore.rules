@@ -1,0 +1,196 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Staff log in with a truck number + PIN. The app turns "2" into the account truck2@dispatch.local,
+    // and "admin" into admin@dispatch.local. These rules key off those account names.
+    function signedInStaff() {
+      return request.auth != null
+        && request.auth.token.email.matches('.*@dispatch[.]local');
+    }
+    // The main admin (created on first-time setup).
+    function isMainAdmin() {
+      return request.auth != null
+        && request.auth.token.email == 'admin@dispatch.local';
+    }
+    // Main admin, or an extra admin the main admin added (listed in /admins/{uid}).
+    // The extra-admin check only runs for admin-… accounts, so drivers never pay for the lookup.
+    function isAdmin() {
+      return isMainAdmin()
+        || (request.auth != null
+            && request.auth.token.email.matches('admin-[a-z0-9-]+@dispatch[.]local')
+            && exists(/databases/$(database)/documents/admins/$(request.auth.uid)));
+    }
+    function isTruck(id) {
+      return signedInStaff()
+        && id is string
+        && id.matches('truck[0-9]{1,2}')
+        && request.auth.token.email == id + '@dispatch.local';
+    }
+    // Is this truck number on the admin's truck list? Anyone can create a login like truck55@dispatch.local
+    // for a number nobody uses, so writes also require the truck to be listed. (Costs one read per check,
+    // so it's only used on writes that happen a few times a day, not on every location ping.)
+    function listed(id) {
+      return exists(/databases/$(database)/documents/trucks/$(id));
+    }
+    // A truck login whose truck is on the list.
+    function isListedTruck() {
+      return signedInStaff()
+        && request.auth.token.email.split('@')[0].matches('truck[0-9]{1,2}')
+        && listed(request.auth.token.email.split('@')[0]);
+    }
+    // Who may record data FOR a truck: that truck's own login (if the truck is listed), or an admin
+    // using the Driver panel (they pick which truck they're driving).
+    function canDrive(id) {
+      return (isTruck(id) && listed(id))
+        || (isAdmin() && id is string && id.matches('truck[0-9]{1,2}'));
+    }
+    // Totals are shown on the admin screen, so they must be plain numbers.
+    function isNumberOrMissing(d, key) {
+      return !(key in d) || d[key] is number;
+    }
+
+    // Customers: anyone can SUBMIT a request (no login); only admin can read or change them.
+    match /customer_requests/{id} {
+      allow create: if request.resource.data.keys().hasOnly(['partySize', 'requestedTime', 'notes', 'status', 'createdAt'])
+        && request.resource.data.partySize is int
+        && request.resource.data.partySize >= 1
+        && request.resource.data.partySize <= 100
+        && request.resource.data.requestedTime is string
+        && request.resource.data.requestedTime.size() <= 5
+        && request.resource.data.notes is string
+        && request.resource.data.notes.size() <= 200
+        && request.resource.data.status == 'Pending'
+        && request.resource.data.createdAt == request.time;
+      allow read, update, delete: if isAdmin();
+    }
+
+    // First-time setup: holds only the admin's chosen username, so the login page knows whether
+    // to show "Create the admin login". Anyone can read it; only the admin can create or change it.
+    match /setup/{id} {
+      allow read: if true;
+      allow create, update: if isMainAdmin() && id == 'admin'
+        && request.resource.data.keys().hasOnly(['username'])
+        && request.resource.data.username is string
+        && request.resource.data.username.size() >= 2
+        && request.resource.data.username.size() <= 30;
+    }
+
+    // Extra admins: names are public (for the sign-in list); only the main admin adds or removes them.
+    // An extra admin may only flip their own "pending" flag to false after choosing a password.
+    match /admins/{uid} {
+      allow read: if true;
+      allow create: if isMainAdmin()
+        && request.resource.data.keys().hasOnly(['name', 'email', 'pending']);
+      allow delete: if isMainAdmin();
+      allow update: if isMainAdmin()
+        || (request.auth != null && request.auth.uid == uid
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['pending'])
+            && request.resource.data.pending == false);
+    }
+    // Truck list (number, driver name, city): readable by anyone so the staff sign-in page can show
+    // the "Who are you?" list before anyone signs in. Only the admin can change it.
+    match /trucks/{id} {
+      allow read: if true;
+      allow write: if isAdmin()
+        && request.resource.data.keys().hasOnly(['city', 'driverName', 'createdAt']);
+      allow delete: if isAdmin();
+    }
+
+    // "I need a new PIN" requests from drivers (also from the sign-in page, before they can sign in).
+    // Anyone can send one for a truck number; only admins can see or clear them.
+    match /pin_requests/{id} {
+      allow create, update: if id.matches('truck[0-9]{1,2}')
+        && request.resource.data.keys().hasOnly(['at', 'from'])
+        && request.resource.data.at == request.time
+        && request.resource.data.from in ['login', 'driver'];
+      allow read, delete: if isAdmin();
+    }
+
+    // Each truck's 4-digit PIN, kept so the admin can look it up, change it, or remove the login.
+    // Only the admin can see or change these.
+    match /pins/{id} {
+      allow read, write: if isAdmin();
+    }
+    // Settings, plus the stops dispatch sends to each truck. Admins and listed trucks read; only admins change.
+    match /config/{id} {
+      allow read: if isAdmin() || isListedTruck();
+      allow write: if isAdmin();
+    }
+
+    // Live positions: a truck writes only its own (or an admin driving that truck); only admin sees them all.
+    // Starting a shift creates the document (checked against the truck list); the pings after that update it
+    // and skip the list check, so the every-30-seconds updates cost no extra reads.
+    match /active_fleet/{id} {
+      allow read: if isAdmin();
+      allow create: if canDrive(id);
+      allow update: if isTruck(id) || canDrive(id);
+      allow delete: if isTruck(id) || isAdmin();
+    }
+
+    // Sales: a truck adds/removes its own (or an admin driving that truck); admin reads everything.
+    match /sales/{id} {
+      allow read, delete: if isAdmin() || isTruck(resource.data.truckId);
+      allow create: if canDrive(request.resource.data.truckId)
+        && request.resource.data.keys().hasOnly(['truckId', 'amount', 'items', 'day', 'createdAt'])
+        && request.resource.data.amount is number
+        && request.resource.data.amount >= 0
+        && request.resource.data.amount <= 100000
+        && request.resource.data.items is int
+        && request.resource.data.items >= 0
+        && request.resource.data.items <= 10000
+        && request.resource.data.day is string
+        && request.resource.data.createdAt == request.time;
+    }
+
+    // Daily running totals: one small document per truck per day, id "<YYYY-MM-DD>_<truckN>".
+    // Each truck updates only its own; screens listen to these instead of every sale.
+    match /daily/{id} {
+      allow read: if isAdmin()
+        || (signedInStaff() && id.split('_').size() == 2
+            && id.split('_')[1] + '@dispatch.local' == request.auth.token.email);
+      allow create, update: if canDrive(request.resource.data.truckId)
+        && id == request.resource.data.day + '_' + request.resource.data.truckId
+        && request.resource.data.keys().hasOnly(['truckId', 'day', 'sales', 'items', 'saleCount', 'stopCount', 'stopSec'])
+        && isNumberOrMissing(request.resource.data, 'sales')
+        && isNumberOrMissing(request.resource.data, 'items')
+        && isNumberOrMissing(request.resource.data, 'saleCount')
+        && isNumberOrMissing(request.resource.data, 'stopCount')
+        && isNumberOrMissing(request.resource.data, 'stopSec');
+      allow delete: if isAdmin();
+    }
+
+    // Stops (time spent in one place): a truck records its own (or an admin driving it); only admin reads.
+    match /stops/{id} {
+      allow read, delete: if isAdmin();
+      allow create: if canDrive(request.resource.data.truckId)
+        && request.resource.data.keys().hasOnly(['truckId', 'lat', 'lng', 'startedAt', 'endedAt', 'durationSec', 'day'])
+        && request.resource.data.durationSec is number
+        && request.resource.data.durationSec >= 0
+        && request.resource.data.startedAt is number
+        && request.resource.data.endedAt is number
+        && request.resource.data.lat is number
+        && request.resource.data.lng is number;
+    }
+
+    // Dispatch receipts: the driver's phone reports "seen" and which stops are done,
+    // one small document per truck. Only that truck (or an admin driving it) writes; admins read.
+    match /dispatch_acks/{id} {
+      allow read: if isAdmin() || isTruck(id);
+      allow create, update: if canDrive(id)
+        && request.resource.data.keys().hasOnly(['dispatchId', 'seenAt', 'done', 'by'])
+        && request.resource.data.dispatchId is string
+        && request.resource.data.dispatchId.size() <= 40
+        && request.resource.data.seenAt is number
+        && request.resource.data.done is list
+        && request.resource.data.done.size() <= 10
+        && request.resource.data.by is string
+        && request.resource.data.by.size() <= 40;
+      allow delete: if isAdmin();
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
